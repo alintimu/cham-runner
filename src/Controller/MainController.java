@@ -7,6 +7,7 @@ import View.AbstractWindowView;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -122,14 +123,18 @@ public class MainController implements BasicController {
         fileList.add("selfService");
         fileList.add("cp");
 
-        // TODO
         for (String s : fileList) {
             Path source = Paths.get("C:\\tomcat\\webapps\\" + s + ".war");
             Path destination = Paths.get("C:\\tomcat\\undeployed\\" + s + ".war");
             try {
                 Files.move(source, destination, REPLACE_EXISTING);
             } catch (IOException e) {
-                e.printStackTrace();
+                if (e instanceof NoSuchFileException) {
+                    // if file isn't in webapps, we don't need to move it so do nothing here.
+                } else {
+                    // otherwise print the stack trace because it may be a different exception.
+                    e.printStackTrace();
+                }
             }
         }
     }

@@ -117,6 +117,38 @@ public class MainWindowView extends JFrame implements AbstractWindowView, ItemLi
                 }
             }
         }
+
+        if (e.getItem() == cp_rb) {
+            if (cp_rb.isSelected()) {
+                try {
+                    this.controller.deployApp("cp", 1);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            } else if (!cp_rb.isSelected()) {
+                try {
+                    this.controller.deployApp("cp", 0);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }
+
+        if (e.getItem() == selfService_rb) {
+            if (selfService_rb.isSelected()) {
+                try {
+                    this.controller.deployApp("selfService", 1);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            } else if (!templates_rb.isSelected()) {
+                try {
+                    this.controller.deployApp("selfService", 0);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }
     }
 
     public void launchPopUp() {

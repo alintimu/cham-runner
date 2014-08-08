@@ -99,12 +99,28 @@ public class MainWindowView extends JFrame implements AbstractWindowView {
         temp_source_tf = new JTextField();
         temp_dest_tf = new JTextField();
 
+        templates_rb.setSelected(true);
+        templates_rb.addItemListener(new ItemListener() {
+            public void itemStateChanged(ItemEvent e) {
+                if (templates_rb.isSelected()) {
+                    if(!saved_templates_path_rb.isSelected()){
+                        temp_source_tf.setEnabled(true);
+                        temp_dest_tf.setEnabled(true);
+                    }
+                }
+                else {
+                    temp_source_tf.setEnabled(false);
+                    temp_dest_tf.setEnabled(false);
+                }
+            }
+        });
+
         saved_templates_path_rb.addItemListener(new ItemListener() {
             public void itemStateChanged(ItemEvent e) {
                 if (saved_templates_path_rb.isSelected()) {
                     temp_source_tf.setEnabled(false);
                     temp_dest_tf.setEnabled(false);
-                } else {
+                } else if(templates_rb.isSelected()) {
                     temp_source_tf.setEnabled(true);
                     temp_dest_tf.setEnabled(true);
                 }
@@ -151,6 +167,7 @@ public class MainWindowView extends JFrame implements AbstractWindowView {
 
     public void getInput(){
         textFieldModel.setTemplateSourcePath(temp_source_tf.getText());
-        temp_dest_tf.setText(textFieldModel.getTemplateSourcePath());
+        textFieldModel.setTemplateDestinationPath(temp_dest_tf.getText());
+        //temp_dest_tf.setText(textFieldModel.getTemplateSourcePath());
     }
 }

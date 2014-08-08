@@ -41,7 +41,7 @@ public class MainWindowView extends JFrame implements AbstractWindowView, ItemLi
             public void actionPerformed(ActionEvent e) {
 //                getInput();
                 //controller.runStartButton();
-                launchPopUp();
+                launchPopUp(1);
             }
         });
 
@@ -74,6 +74,8 @@ public class MainWindowView extends JFrame implements AbstractWindowView, ItemLi
                 return getPreferredSize();
             }
         };
+
+        JButton setPath = new JButton("Set Path");
 
         templatesPanel.setLayout(new BoxLayout(templatesPanel, BoxLayout.LINE_AXIS));
         templatesPanel.setBorder(BorderFactory.createTitledBorder("Templates WAR"));
@@ -151,7 +153,7 @@ public class MainWindowView extends JFrame implements AbstractWindowView, ItemLi
         }
     }
 
-    public void launchPopUp() {
+    public void launchPopUp(int app) {
 
         JPanel popupPanel = new JPanel();
         popupPanel.setLayout(new BoxLayout(popupPanel, BoxLayout.PAGE_AXIS));
@@ -171,8 +173,21 @@ public class MainWindowView extends JFrame implements AbstractWindowView, ItemLi
         int result = JOptionPane.showConfirmDialog(null, popupPanel,
                 "Enter the Source and Destination paths", JOptionPane.OK_CANCEL_OPTION);
         if (result == JOptionPane.OK_OPTION) {
-            textFieldModel.setTemplateSourcePath(source_tf.getText());
-            textFieldModel.setTemplateDestinationPath(dest_tf.getText());
+            switch (app){
+                case 1: {
+                    textFieldModel.setTemplateSourcePath(source_tf.getText());
+                    textFieldModel.setTemplateDestinationPath(dest_tf.getText());
+                }
+                case 2: {
+                    textFieldModel.setCpSourcePath(source_tf.getText());
+                    textFieldModel.setCpDestinationPath(dest_tf.getText());
+                }
+                case 3: {
+                    textFieldModel.setSelfServiceSourcePath(source_tf.getText());
+                    textFieldModel.setSelfServiceDestinationPath(dest_tf.getText());
+                }
+            }
+
         }
 
     }

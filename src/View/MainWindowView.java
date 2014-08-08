@@ -13,11 +13,9 @@ import java.awt.event.ItemListener;
 /**
  * Created by alin.timu on 8/8/2014.
  */
-public class MainWindowView extends JFrame implements AbstractWindowView {
-    public JCheckBox templates_rb, saved_templates_path_rb, cp_rb, selfService_rb;
+public class MainWindowView extends JFrame implements AbstractWindowView, ItemListener {
+    public JCheckBox templates_rb, cp_rb, selfService_rb;
     public JTextField temp_source_tf, temp_dest_tf, cp_tf, selfService_tf;
-    public String source_template_string = "";
-    public String destination_template_string = "";
     private String VIEW_IDENTIFIER = "";
     private MainController controller;
     private TextFieldModel textFieldModel = new TextFieldModel();
@@ -42,14 +40,14 @@ public class MainWindowView extends JFrame implements AbstractWindowView {
         startButton.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
-
-                getInput();
+//                getInput();
                 //controller.runStartButton();
             }
         });
 
         windowPanel.add(constructTemplatesPanel());
         windowPanel.add(startButton);
+
         //controller.changeView(MainWindowView.class);
         //controller.changeView(VIEW_IDENTIFIER);
 
@@ -91,7 +89,8 @@ public class MainWindowView extends JFrame implements AbstractWindowView {
         JPanel temp_rb_panel = new JPanel();
 
         templates_rb = new JCheckBox("templates.war");
-        saved_templates_path_rb = new JCheckBox("Use saved path");
+
+        templates_rb.addItemListener(this);
 
         sourceLabel = new JLabel("Source path:");
         destinationLabel = new JLabel("Destination path:");
@@ -99,37 +98,9 @@ public class MainWindowView extends JFrame implements AbstractWindowView {
         temp_source_tf = new JTextField();
         temp_dest_tf = new JTextField();
 
-        templates_rb.setSelected(true);
-        templates_rb.addItemListener(new ItemListener() {
-            public void itemStateChanged(ItemEvent e) {
-                if (templates_rb.isSelected()) {
-                    if(!saved_templates_path_rb.isSelected()){
-                        temp_source_tf.setEnabled(true);
-                        temp_dest_tf.setEnabled(true);
-                    }
-                }
-                else {
-                    temp_source_tf.setEnabled(false);
-                    temp_dest_tf.setEnabled(false);
-                }
-            }
-        });
-
-        saved_templates_path_rb.addItemListener(new ItemListener() {
-            public void itemStateChanged(ItemEvent e) {
-                if (saved_templates_path_rb.isSelected()) {
-                    temp_source_tf.setEnabled(false);
-                    temp_dest_tf.setEnabled(false);
-                } else if(templates_rb.isSelected()) {
-                    temp_source_tf.setEnabled(true);
-                    temp_dest_tf.setEnabled(true);
-                }
-            }
-        });
-
+        templates_rb.setSelected(false);
 
         temp_rb_panel.add(templates_rb);
-        temp_rb_panel.add(saved_templates_path_rb);
 
 
         // Creating and adding the text field.
@@ -162,7 +133,25 @@ public class MainWindowView extends JFrame implements AbstractWindowView {
     public void run(MainController mainController) {
         this.controller = mainController;
         this.setVisible(true);
+    }
 
+    @Override
+    public void itemStateChanged(ItemEvent e) {
+        if (e.getItem() == templates_rb) {
+            if (templates_rb.isSelected()) {
+                try {
+                    this.controller.moveToWebapps();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            } else if (!templates_rb.isSelected()) {
+                try {
+                    this.controller.moveToUndeployed();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }
     }
 
     public void getInput(){

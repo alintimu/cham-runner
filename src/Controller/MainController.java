@@ -5,6 +5,7 @@ import Repository.AbstractRepository;
 import View.AbstractWindowView;
 import View.MainWindowView;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,7 +46,6 @@ public class MainController implements BasicController {
         if (viewList.size() > 0) {
             viewList.get(0).run(this);
         }
-
     }
 
     @Override
@@ -71,7 +71,39 @@ public class MainController implements BasicController {
 
     public void runStartButton() {
 
+    }
 
+    public void moveToUndeployed() {
+        try {
+            File templates = new File("C:\\tomcat\\webapps\\templates.war");
 
+            if (templates.renameTo(new File ("C:\\tomcat\\undeployed\\" + templates.getName()))) {
+                System.out.println("Moved " + templates.getName() + " to undeployed !");
+            } else {
+                System.out.println("Deleting file at destination...");
+                File to_delete = new File("C:\\tomcat\\undeployed\\templates.war");
+                to_delete.delete();
+                templates.renameTo(new File ("C:\\tomcat\\undeployed\\" + templates.getName()));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void moveToWebapps() {
+        try {
+            File templates = new File("C:\\tomcat\\undeployed\\templates.war");
+
+            if (templates.renameTo(new File ("C:\\tomcat\\webapps\\" + templates.getName()))) {
+                System.out.println("Moved " + templates.getName() + " back to webapps, fuck yeah !");
+            } else {
+                System.out.println("Deleting file at destination...");
+                File to_delete = new File("C:\\tomcat\\webapps\\templates.war");
+                to_delete.delete();
+                templates.renameTo(new File ("C:\\tomcat\\webapps\\" + templates.getName()));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

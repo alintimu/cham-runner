@@ -3,17 +3,16 @@ package Controller;
 import Model.TextFieldModel;
 import Repository.AbstractRepository;
 import View.AbstractWindowView;
-import View.MainWindowView;
 
 import java.io.File;
-import java.io.IOError;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import static java.nio.file.StandardCopyOption.*;
+
+import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
 /**
  * Created by alin.timu on 8/8/2014.
@@ -102,13 +101,13 @@ public class MainController implements BasicController {
             try {
                 File toMove = new File("C:\\tomcat\\undeployed\\" + fileName + ".war");
 
-                if (toMove.renameTo(new File ("C:\\tomcat\\webapps\\" + toMove.getName()))) {
+                if (toMove.renameTo(new File("C:\\tomcat\\webapps\\" + toMove.getName()))) {
                     System.out.println("Moved " + toMove.getName() + " back to webapps, fuck yeah !");
                 } else {
                     System.out.println("Deleting file at destination...");
                     File to_delete = new File("C:\\tomcat\\webapps\\" + fileName + ".war");
                     to_delete.delete();
-                    toMove.renameTo(new File ("C:\\tomcat\\webapps\\" + toMove.getName()));
+                    toMove.renameTo(new File("C:\\tomcat\\webapps\\" + toMove.getName()));
                 }
             } catch (Exception e) {
                 e.printStackTrace();

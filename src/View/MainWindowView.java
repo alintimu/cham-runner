@@ -19,7 +19,7 @@ public class MainWindowView extends JFrame implements AbstractWindowView, ItemLi
     // Components
     private JPanel windowPanel, templatesPanel, cpPanel, selfServicePanel;
     private JLabel sourceLabel, destinationLabel;
-    private JButton startButton;
+    private JButton startButton, setPath;
     private int width = 200, height = 50;
 
 
@@ -45,6 +45,7 @@ public class MainWindowView extends JFrame implements AbstractWindowView, ItemLi
             public void actionPerformed(ActionEvent e) {
 //                getInput();
                 //controller.runStartButton();
+                launchPopUp();
             }
         });
 
@@ -92,8 +93,8 @@ public class MainWindowView extends JFrame implements AbstractWindowView, ItemLi
         JPanel temp_rb_panel = new JPanel();
 
         templates_rb = new JCheckBox("templates.war");
-
         templates_rb.addItemListener(this);
+
 
         sourceLabel = new JLabel("Source path:");
         destinationLabel = new JLabel("Destination path:");
@@ -103,6 +104,7 @@ public class MainWindowView extends JFrame implements AbstractWindowView, ItemLi
 
         templates_rb.setSelected(false);
 
+        JPopupMenu popupMenu = new JPopupMenu();
         temp_rb_panel.add(templates_rb);
 
 
@@ -128,6 +130,7 @@ public class MainWindowView extends JFrame implements AbstractWindowView, ItemLi
         templatesPanel.add(temp_rb_panel);
         templatesPanel.add(sourcePanel);
         templatesPanel.add(destPanel);
+        templatesPanel.add(popupMenu);
 
         return templatesPanel;
     }
@@ -161,5 +164,31 @@ public class MainWindowView extends JFrame implements AbstractWindowView, ItemLi
         textFieldModel.setTemplateSourcePath(temp_source_tf.getText());
         textFieldModel.setTemplateDestinationPath(temp_dest_tf.getText());
         //temp_dest_tf.setText(textFieldModel.getTemplateSourcePath());
+    }
+
+    public void launchPopUp() {
+
+        JPanel popupPanel = new JPanel();
+        popupPanel.setLayout(new BoxLayout(popupPanel, BoxLayout.PAGE_AXIS));
+        JTextField source_tf = new JTextField();
+        JTextField dest_tf = new JTextField();
+
+        source_tf.setPreferredSize(new Dimension(300, 25));
+        dest_tf.setPreferredSize(new Dimension(300, 25));
+
+
+        popupPanel.add(new JLabel("Source path:"));
+        popupPanel.add(source_tf);
+        popupPanel.add(new JLabel("Destination path:"));
+        popupPanel.add(dest_tf);
+
+
+        int result = JOptionPane.showConfirmDialog(null, popupPanel,
+                "Enter the Source and Destination paths", JOptionPane.OK_CANCEL_OPTION);
+        if (result == JOptionPane.OK_OPTION) {
+            textFieldModel.setTemplateSourcePath(source_tf.getText());
+            textFieldModel.setTemplateDestinationPath(dest_tf.getText());
+        }
+
     }
 }

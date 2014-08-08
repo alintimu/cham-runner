@@ -22,7 +22,7 @@ public class MainWindowView extends JFrame implements AbstractWindowView, ItemLi
     // Components
     private JPanel windowPanel, templatesPanel, cpPanel, selfServicePanel;
     private JLabel sourceLabel, destinationLabel;
-    private JButton startButton;
+    private JButton startButton, setPath;
     private int width = 200, height = 50;
 
 
@@ -89,8 +89,8 @@ public class MainWindowView extends JFrame implements AbstractWindowView, ItemLi
         JPanel temp_rb_panel = new JPanel();
 
         templates_rb = new JCheckBox("templates.war");
-
         templates_rb.addItemListener(this);
+
 
         sourceLabel = new JLabel("Source path:");
         destinationLabel = new JLabel("Destination path:");
@@ -100,6 +100,7 @@ public class MainWindowView extends JFrame implements AbstractWindowView, ItemLi
 
         templates_rb.setSelected(false);
 
+        JPopupMenu popupMenu = new JPopupMenu();
         temp_rb_panel.add(templates_rb);
 
 
@@ -125,6 +126,7 @@ public class MainWindowView extends JFrame implements AbstractWindowView, ItemLi
         templatesPanel.add(temp_rb_panel);
         templatesPanel.add(sourcePanel);
         templatesPanel.add(destPanel);
+        templatesPanel.add(popupMenu);
 
         return templatesPanel;
     }

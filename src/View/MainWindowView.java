@@ -22,6 +22,7 @@ public class MainWindowView extends JFrame implements AbstractWindowView, ItemLi
     public MainWindowView(String mainPageView) {
         VIEW_IDENTIFIER = mainPageView;
 
+        // Listener for windowClosing -> move all remaining files to undeployed on exit
         this.addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
             public void windowClosing(java.awt.event.WindowEvent windowEvent) {
@@ -104,15 +105,18 @@ public class MainWindowView extends JFrame implements AbstractWindowView, ItemLi
 
     @Override
     public void itemStateChanged(ItemEvent e) {
+        // if checkbox ticked
         if (e.getItem() == templates_rb) {
             if (templates_rb.isSelected()) {
                 try {
+                    // move templates in webapps
                     this.controller.deployApp("templates", 1);
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
             } else if (!templates_rb.isSelected()) {
                 try {
+                    // move templates out of webapps
                     this.controller.deployApp("templates", 0);
                 } catch (Exception ex) {
                     ex.printStackTrace();
@@ -120,15 +124,18 @@ public class MainWindowView extends JFrame implements AbstractWindowView, ItemLi
             }
         }
 
+        // if checkbox ticked
         if (e.getItem() == cp_rb) {
             if (cp_rb.isSelected()) {
                 try {
+                    // move cp into webapps
                     this.controller.deployApp("cp", 1);
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
             } else if (!cp_rb.isSelected()) {
                 try {
+                    // move cp out of webapps
                     this.controller.deployApp("cp", 0);
                 } catch (Exception ex) {
                     ex.printStackTrace();
@@ -136,15 +143,18 @@ public class MainWindowView extends JFrame implements AbstractWindowView, ItemLi
             }
         }
 
+        // if checkbox ticked
         if (e.getItem() == selfService_rb) {
             if (selfService_rb.isSelected()) {
                 try {
+                    // move selfService into webapps
                     this.controller.deployApp("selfService", 1);
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
             } else if (!templates_rb.isSelected()) {
                 try {
+                    // move selfService out of webapps
                     this.controller.deployApp("selfService", 0);
                 } catch (Exception ex) {
                     ex.printStackTrace();

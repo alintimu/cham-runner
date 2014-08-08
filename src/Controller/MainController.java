@@ -79,17 +79,21 @@ public class MainController implements BasicController {
 
     }
 
-    /* opt 0 to move from webapps -> undeployed
-       opt 1 to move from undeployed -> webapps
-       fileName is file to be moved back or forth */
+    /* moves .war files into and out of the webapps dir
+    *  0 out of webapps
+    *  1 into webapps */
     public void deployApp(String fileName, int opt) {
+        // move file from webapps to undeployed
         if (opt == 0) {
             try {
                 File toMove = new File("C:\\tomcat\\webapps\\" + fileName + ".war");
 
+                // if nothing at destination, move file.
                 if (toMove.renameTo(new File("C:\\tomcat\\undeployed\\" + toMove.getName()))) {
                     System.out.println("Moved " + toMove.getName() + " to undeployed !");
-                } else {
+                }
+                // if there already is a file @ destination, delete and move
+                else {
                     System.out.println("Deleting file at destination...");
                     File to_delete = new File("C:\\tomcat\\undeployed\\" + fileName + ".war");
                     to_delete.delete();
@@ -98,6 +102,8 @@ public class MainController implements BasicController {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+
+        // move file from undeployed to webapps
         } else if (opt == 1) {
             try {
                 File toMove = new File("C:\\tomcat\\undeployed\\" + fileName + ".war");
@@ -116,7 +122,7 @@ public class MainController implements BasicController {
         }
     }
 
-    // if any files remain in the webapps dir, move them to undeployed
+    // if any files remain in the webapps dir on exit, use this to move them to undeployed
     public void moveOnClose() {
         List<String> fileList = new ArrayList<>();
         fileList.add("templates");

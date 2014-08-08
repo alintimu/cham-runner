@@ -42,6 +42,7 @@ public class MainWindowView extends JFrame implements AbstractWindowView, ItemLi
             public void actionPerformed(ActionEvent e) {
 //                getInput();
                 //controller.runStartButton();
+                launchPopUp();
             }
         });
 
@@ -160,5 +161,31 @@ public class MainWindowView extends JFrame implements AbstractWindowView, ItemLi
         textFieldModel.setTemplateSourcePath(temp_source_tf.getText());
         textFieldModel.setTemplateDestinationPath(temp_dest_tf.getText());
         //temp_dest_tf.setText(textFieldModel.getTemplateSourcePath());
+    }
+
+    public void launchPopUp() {
+
+        JPanel popupPanel = new JPanel();
+        popupPanel.setLayout(new BoxLayout(popupPanel, BoxLayout.PAGE_AXIS));
+        JTextField source_tf = new JTextField();
+        JTextField dest_tf = new JTextField();
+
+        source_tf.setPreferredSize(new Dimension(300, 25));
+        dest_tf.setPreferredSize(new Dimension(300, 25));
+
+
+        popupPanel.add(new JLabel("Source path:"));
+        popupPanel.add(source_tf);
+        popupPanel.add(new JLabel("Destination path:"));
+        popupPanel.add(dest_tf);
+
+
+        int result = JOptionPane.showConfirmDialog(null, popupPanel,
+                "Enter the Source and Destination paths", JOptionPane.OK_CANCEL_OPTION);
+        if (result == JOptionPane.OK_OPTION) {
+            textFieldModel.setTemplateSourcePath(source_tf.getText());
+            textFieldModel.setTemplateDestinationPath(dest_tf.getText());
+        }
+
     }
 }

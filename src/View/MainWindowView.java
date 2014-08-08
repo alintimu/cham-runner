@@ -5,10 +5,7 @@ import Model.TextFieldModel;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
+import java.awt.event.*;
 
 /**
  * Created by alin.timu on 8/8/2014.
@@ -29,7 +26,13 @@ public class MainWindowView extends JFrame implements AbstractWindowView, ItemLi
     public MainWindowView(String mainPageView) {
         VIEW_IDENTIFIER = mainPageView;
 
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                controller.moveOnClose();
+                System.exit(0);
+            }
+        });
 
         windowPanel = new JPanel();
         windowPanel.setLayout(new BoxLayout(windowPanel, BoxLayout.PAGE_AXIS));
@@ -140,13 +143,13 @@ public class MainWindowView extends JFrame implements AbstractWindowView, ItemLi
         if (e.getItem() == templates_rb) {
             if (templates_rb.isSelected()) {
                 try {
-                    this.controller.moveToWebapps();
+                    this.controller.deployApp("templates", 1);
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
             } else if (!templates_rb.isSelected()) {
                 try {
-                    this.controller.moveToUndeployed();
+                    this.controller.deployApp("templates", 0);
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }

@@ -6,11 +6,8 @@ package Model;
 public class TextFieldModel {
 
     public String templateSourcePath;
-    public String templateDestinationPath;
     public String cpSourcePath;
-    public String cpDestinationPath;
     public String selfServiceSourcePath;
-    public String selfServiceDestinationPath;
 
     public TextFieldModel() {
 
@@ -24,28 +21,12 @@ public class TextFieldModel {
         this.templateSourcePath = templateSourcePath;
     }
 
-    public String getTemplateDestinationPath() {
-        return templateDestinationPath;
-    }
-
-    public void setTemplateDestinationPath(String templateDestinationPath) {
-        this.templateDestinationPath = templateDestinationPath;
-    }
-
     public String getCpSourcePath() {
         return cpSourcePath;
     }
 
     public void setCpSourcePath(String cpSourcePath) {
         this.cpSourcePath = cpSourcePath;
-    }
-
-    public String getCpDestinationPath() {
-        return cpDestinationPath;
-    }
-
-    public void setCpDestinationPath(String cpDestinationPath) {
-        this.cpDestinationPath = cpDestinationPath;
     }
 
     public String getSelfServiceSourcePath() {
@@ -56,11 +37,4 @@ public class TextFieldModel {
         this.selfServiceSourcePath = selfServiceSourcePath;
     }
 
-    public String getSelfServiceDestinationPath() {
-        return selfServiceDestinationPath;
-    }
-
-    public void setSelfServiceDestinationPath(String selfServiceDestinationPath) {
-        this.selfServiceDestinationPath = selfServiceDestinationPath;
-    }
 }

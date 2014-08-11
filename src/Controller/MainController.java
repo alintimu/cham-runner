@@ -171,8 +171,5 @@ public class MainController implements BasicController {
 
     public void setPathToXml(int projectId, String project) {
 
-
-
-
     }
 }

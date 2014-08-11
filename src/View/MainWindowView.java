@@ -18,6 +18,9 @@ public class MainWindowView extends JFrame implements AbstractWindowView, ItemLi
     // Components
     private JPanel windowPanel, templatesPanel, cpPanel, selfServicePanel;
     private JButton startButton, setPath;
+    private JButton setPathTemplate = new JButton("Set path");
+    private JButton setPathCp = new JButton("Set path");
+    private JButton setPathSelfService = new JButton("Set path");
 
     public MainWindowView(String mainPageView) {
         VIEW_IDENTIFIER = mainPageView;
@@ -50,7 +53,7 @@ public class MainWindowView extends JFrame implements AbstractWindowView, ItemLi
         windowPanel.add(startButton);
 
         this.add(windowPanel);
-        this.setSize(1200, 400);
+        this.setSize(700, 400);
         this.setLocationRelativeTo(null);
         this.setVisible(true);
     }
@@ -67,7 +70,7 @@ public class MainWindowView extends JFrame implements AbstractWindowView, ItemLi
             }
 
             public Dimension getPreferredSize() {
-                return new Dimension(1100,
+                return new Dimension(600,
                         90);
             }
 
@@ -76,7 +79,12 @@ public class MainWindowView extends JFrame implements AbstractWindowView, ItemLi
             }
         };
 
-        JButton setPath = new JButton("Set Path");
+        setPathTemplate.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                launchPopUp(1);
+            }
+        });
 
         templatesPanel.setLayout(new BoxLayout(templatesPanel, BoxLayout.LINE_AXIS));
         templatesPanel.setBorder(BorderFactory.createTitledBorder("Templates WAR"));
@@ -92,6 +100,7 @@ public class MainWindowView extends JFrame implements AbstractWindowView, ItemLi
         temp_rb_panel.add(templates_rb);
 
         templatesPanel.add(temp_rb_panel);
+        templatesPanel.add(setPathTemplate);
         templatesPanel.add(popupMenu);
 
         return templatesPanel;

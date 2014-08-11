@@ -159,17 +159,35 @@ public class MainController implements BasicController {
 
         for (String s : fileList) {
             Path directoryToDelete = Paths.get("C:\\tomcat\\webapps\\" + s);
+            File check = new File("C:\\tomcat\\webapps\\" + s);
+            // if the dir doesn't exist move on
+            if (!check.exists()) {
+                continue;
+            }
             FileVisitor delFileVisitor = new FileVisitor();
             try{
                 Files.walkFileTree(directoryToDelete, delFileVisitor);
+                // will squirt some silly stack trace when dir isn't there, regardless of catch
             }catch(IOException ioe){
                 ioe.printStackTrace();
-                System.out.println("Don't panic, dirs were probably not there ^_^ ");
             }
         }
     }
 
     public void setPathToXml(int projectId, String project) {
 
+    }
+
+    public void getTomcatPath(String var) {
+        String value = System.getenv(var);
+        char backslash = '\\';
+        // make sure to add a backslash after each backslash because Windows
+        for (int i = 0; i < value.length(); i++) {
+            if (value.charAt(i) == backslash) {
+                value = new StringBuilder(value).insert(i,backslash).toString();
+                i++;
+            }
+        }
+        System.out.println("value is: " + value);
     }
 }

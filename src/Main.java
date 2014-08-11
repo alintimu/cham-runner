@@ -42,5 +42,6 @@ public class Main {
         controller.addRepository(mainRepository);
 
         controller.run();
+        controller.getTomcatPath("CATALINA_BASE");
     }
 }

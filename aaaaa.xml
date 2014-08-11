@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Projects>
+    <project id="1" enabled="true">
+        <name>SS</name>
+        <path>test/estes/fs/fsa/dsf/ds</path>
+        <comment></comment>
+    </project>
+    <project id="2" enabled="false">
+        <name>API</name>
+        <path>dsa/dsa/dsa</path>
+        <comment></comment>
+    </project>
+</Projects>

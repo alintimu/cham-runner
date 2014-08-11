@@ -2,6 +2,7 @@ package Controller;
 
 import Model.TextFieldModel;
 import Repository.AbstractRepository;
+import Util.FileVisitor;
 import View.AbstractWindowView;
 
 import java.io.File;
@@ -79,55 +80,59 @@ public class MainController implements BasicController {
 
     }
 
-    /* opt 0 to move from webapps -> undeployed
-       opt 1 to move from undeployed -> webapps
-       fileName is file to be moved back or forth */
+    /* moves .war files into and out of the webapps dir
+    *  0 out of webapps
+    *  1 into webapps */
     public void deployApp(String fileName, int opt) {
+        String undeployed_dir = "C:\\tomcat\\undeployed\\";
+        String webapps_dir = "C:\\tomcat\\webapps\\";
+
+        // move file from webapps to undeployed
         if (opt == 0) {
-            try {
-                File toMove = new File("C:\\tomcat\\webapps\\" + fileName + ".war");
+            // source, destination, filename
+            moveToDir(webapps_dir, undeployed_dir, fileName);
 
-                if (toMove.renameTo(new File("C:\\tomcat\\undeployed\\" + toMove.getName()))) {
-                    System.out.println("Moved " + toMove.getName() + " to undeployed !");
-                } else {
-                    System.out.println("Deleting file at destination...");
-                    File to_delete = new File("C:\\tomcat\\undeployed\\" + fileName + ".war");
-                    to_delete.delete();
-                    toMove.renameTo(new File("C:\\tomcat\\undeployed\\" + toMove.getName()));
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+        // move file from undeployed to webapps
         } else if (opt == 1) {
-            try {
-                File toMove = new File("C:\\tomcat\\undeployed\\" + fileName + ".war");
-
-                if (toMove.renameTo(new File("C:\\tomcat\\webapps\\" + toMove.getName()))) {
-                    System.out.println("Moved " + toMove.getName() + " back to webapps, fuck yeah !");
-                } else {
-                    System.out.println("Deleting file at destination...");
-                    File to_delete = new File("C:\\tomcat\\webapps\\" + fileName + ".war");
-                    to_delete.delete();
-                    toMove.renameTo(new File("C:\\tomcat\\webapps\\" + toMove.getName()));
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            // source, destination, filename
+            moveToDir(undeployed_dir, webapps_dir, fileName);
         }
     }
 
-    // if any files remain in the webapps dir, move them to undeployed
+    public void moveToDir(String source_dir, String dest_dir, String fileName) {
+        try {
+            File toMove = new File(source_dir + fileName + ".war");
+
+            // move .war file
+            // if nothing at destination, move file.
+            if (toMove.renameTo(new File(dest_dir + toMove.getName()))) {
+                System.out.println("Moved " + toMove.getName() + " to undeployed !");
+            }
+            // if there already is a file @ destination, delete and move
+            else {
+                System.out.println("Deleting file at destination...");
+                File to_delete = new File(dest_dir + fileName + ".war");
+                to_delete.delete();
+                toMove.renameTo(new File(dest_dir + toMove.getName()));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    // if any files remain in the webapps dir on exit, use this to move them to undeployed
     public void moveOnClose() {
-        List<String> fileList = new ArrayList<>();
-        fileList.add("templates");
-        fileList.add("selfService");
-        fileList.add("cp");
+        List<String> fileList = new ArrayList<String>() {{
+            add("templates");
+            add("cp");
+            add("selfService");
+        }};
 
         for (String s : fileList) {
-            Path source = Paths.get("C:\\tomcat\\webapps\\" + s + ".war");
-            Path destination = Paths.get("C:\\tomcat\\undeployed\\" + s + ".war");
+            Path source_file = Paths.get("C:\\tomcat\\webapps\\" + s + ".war");
+            Path destination_file = Paths.get("C:\\tomcat\\undeployed\\" + s + ".war");
             try {
-                Files.move(source, destination, REPLACE_EXISTING);
+                Files.move(source_file, destination_file, REPLACE_EXISTING);
             } catch (IOException e) {
                 if (e instanceof NoSuchFileException) {
                     // if file isn't in webapps, we don't need to move it so do nothing here.
@@ -135,6 +140,31 @@ public class MainController implements BasicController {
                     // otherwise print the stack trace because it may be a different exception.
                     e.printStackTrace();
                 }
+            }
+        }
+
+        // and delete dirs
+        deleteDirs();
+    }
+
+    /* TODO
+       Make sure to uncomment the corect dir names before release */
+    public void deleteDirs() {
+        List<String> fileList = new ArrayList<String>() {{
+            add("ceva");
+//            add("templates\\");
+//            add("cp\\");
+//            add("selfService\\");
+        }};
+
+        for (String s : fileList) {
+            Path directoryToDelete = Paths.get("C:\\tomcat\\webapps\\" + s);
+            FileVisitor delFileVisitor = new FileVisitor();
+            try{
+                Files.walkFileTree(directoryToDelete, delFileVisitor);
+            }catch(IOException ioe){
+                ioe.printStackTrace();
+                System.out.println("Don't panic, dirs were probably not there ^_^ ");
             }
         }
     }

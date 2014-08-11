@@ -19,13 +19,13 @@ public class Main {
         pathList.getModelList().add(new ProjectPathsModel(2, "dsa/dsa/dsa", "API", false, ""));
 
         try {
-            String xxx = JaxbUtils.convertToXml("aaaaa.xml", ProjectPathList.class, pathList);
+            String xxx = JaxbUtils.convertToXml("config.xml", ProjectPathList.class, pathList);
         } catch (JAXBException e) {
             e.printStackTrace();
         }
 
         try {
-            ProjectPathList pathList2 = (ProjectPathList) JaxbUtils.convertToObject("aaaaa.xml", ProjectPathList.class);
+            ProjectPathList pathList2 = (ProjectPathList) JaxbUtils.convertToObject("config.xml", ProjectPathList.class);
 
             System.out.println(pathList2);
 

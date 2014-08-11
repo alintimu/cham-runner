@@ -147,6 +147,10 @@ public class MainController implements BasicController {
         deleteDirs();
     }
 
+    public void setPathToXml(int projectId, String project) {
+
+    }
+
     /* TODO
        Make sure to uncomment the corect dir names before release */
     public void deleteDirs() {
@@ -167,12 +171,5 @@ public class MainController implements BasicController {
                 System.out.println("Don't panic, dirs were probably not there ^_^ ");
             }
         }
-    }
-
-    public void setPathToXml(int projectId, String project) {
-
-
-
-
     }
 }

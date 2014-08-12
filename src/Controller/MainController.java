@@ -2,13 +2,16 @@ package Controller;
 
 import Model.ProjectPathList;
 import Model.ProjectPathsModel;
-import Model.TextFieldModel;
-import Repository.AbstractRepository;
 import Util.FileVisitor;
 import Util.JaxbUtils;
-import View.AbstractWindowView;
+import View.AbstractMainWindowView;
+import View.MainWindowView;
 
 import javax.xml.bind.JAXBException;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowListener;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -23,117 +26,36 @@ import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 /**
  * Created by alin.timu on 8/8/2014.
  */
-public class MainController implements BasicController {
-    protected List<AbstractWindowView> viewList = new ArrayList<>();
-    protected List<AbstractRepository> repositoryList = new ArrayList<>();
-    private TextFieldModel textFieldModel = new TextFieldModel();
+public class MainController {
+    protected MainWindowView mainWindow;
 
-    public List<AbstractWindowView> getViewList() {
-        return viewList;
+    public MainController(MainWindowView mainWindow) {
+        this.mainWindow = mainWindow;
+
+        mainWindow.addStartButtonListener(new StartButtonListener());
+        mainWindow.addWinListener(new CloseWindowListener());
     }
 
-    public void setViewList(List<AbstractWindowView> viewList) {
-        this.viewList = viewList;
+    List<String> fileList = new ArrayList<String>();
+
+    public MainWindowView getMainWindow() {
+        return mainWindow;
     }
 
-    public List<AbstractRepository> getRepositoryList() {
-        return repositoryList;
+    public void setMainWindow(MainWindowView mainWindow) {
+        this.mainWindow = mainWindow;
     }
 
-    public void setRepositoryList(List<AbstractRepository> repositoryList) {
-        this.repositoryList = repositoryList;
-    }
-
-    public void addView(AbstractWindowView mainView) {
-        viewList.add(mainView);
-    }
-
-    public void addRepository(AbstractRepository mainRepository) {
-        repositoryList.add(mainRepository);
-    }
-
-    @Override
-    public void run() {
-        if (viewList.size() > 0) {
-            viewList.get(0).run(this);
-        }
-    }
-
-    @Override
-    public void changeView(String view_identifier) {
-
-    }
-
-    @Override
-    public void changeView(Class<? extends AbstractWindowView> view) {
-
-    }
-
-    @Override
-    public AbstractWindowView getView(String s) {
-        return null;
-    }
-
-    @Override
-    public AbstractRepository getRepository(String s) {
-        return null;
-    }
-
-
-    public void runStartButton() {
-
-    }
-
-    /* moves .war files into and out of the webapps dir
-    *  0 out of webapps
-    *  1 into webapps */
-    public void deployApp(String fileName, int opt) {
-        String undeployed_dir = "C:\\tomcat\\undeployed\\";
-        String webapps_dir = "C:\\tomcat\\webapps\\";
-
-        // move file from webapps to undeployed
-        if (opt == 0) {
-            // source, destination, filename
-            moveToDir(webapps_dir, undeployed_dir, fileName);
-
-        // move file from undeployed to webapps
-        } else if (opt == 1) {
-            // source, destination, filename
-            moveToDir(undeployed_dir, webapps_dir, fileName);
-        }
-    }
-
-    public void moveToDir(String source_dir, String dest_dir, String fileName) {
-        try {
-            File toMove = new File(source_dir + fileName + ".war");
-
-            // move .war file
-            // if nothing at destination, move file.
-            if (toMove.renameTo(new File(dest_dir + toMove.getName()))) {
-                System.out.println("Moved " + toMove.getName() + " to undeployed !");
-            }
-            // if there already is a file @ destination, delete and move
-            else {
-                System.out.println("Deleting file at destination...");
-                File to_delete = new File(dest_dir + fileName + ".war");
-                to_delete.delete();
-                toMove.renameTo(new File(dest_dir + toMove.getName()));
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
+    // TODO recheck fileList var
     // if any files remain in the webapps dir on exit, use this to move them to undeployed
+    // used in MainWindowView
     public void moveOnClose() {
-        List<String> fileList = new ArrayList<String>() {{
-            add("templates");
-            add("cp");
-            add("selfService");
-        }};
+        fileList.add("templates");
+        fileList.add("cp");
+        fileList.add("selfService");
 
         for (String s : fileList) {
-            Path source_file = Paths.get("C:\\tomcat\\webapps\\" + s + ".war");
+            Path source_file = Paths.get("C:\\tomcat\\webapps\\" + s +".war");
             Path destination_file = Paths.get("C:\\tomcat\\undeployed\\" + s + ".war");
             try {
                 Files.move(source_file, destination_file, REPLACE_EXISTING);
@@ -154,7 +76,7 @@ public class MainController implements BasicController {
     public void setPathToXml(int projectId, String projectName) {
         ProjectPathList pathList = new ProjectPathList();
 
-        switch (projectId){
+/*        switch (projectId){
             case 1: {
                 pathList.getModelList().add(new ProjectPathsModel(projectId, textFieldModel.getTemplateSourcePath(), projectName, true, ""));
             }
@@ -164,7 +86,7 @@ public class MainController implements BasicController {
             case 3: {
                 pathList.getModelList().add(new ProjectPathsModel(projectId, textFieldModel.getSelfServiceSourcePath(), projectName, true, ""));
             }
-        }
+        }*/
 
         try {
             JaxbUtils.convertToXml("config.xml", ProjectPathList.class, pathList);
@@ -173,19 +95,11 @@ public class MainController implements BasicController {
         }
     }
 
-    /* TODO
-       Make sure to uncomment the corect dir names before release */
+    /* TODO recheck fileList var and initialize propertly */
     public void deleteDirs() {
-        List<String> fileList = new ArrayList<String>() {{
-            add("ceva");
-//            add("templates\\");
-//            add("cp\\");
-//            add("selfService\\");
-        }};
-
         for (String s : fileList) {
-            Path directoryToDelete = Paths.get("C:\\tomcat\\webapps\\" + s);
-            File check = new File("C:\\tomcat\\webapps\\" + s);
+            Path directoryToDelete = Paths.get("C:\\tomcat\\webapps\\" + s + "\\");
+            File check = new File("C:\\tomcat\\webapps\\" + s + "\\");
             // if the dir doesn't exist move on
             if (!check.exists()) {
                 continue;
@@ -211,5 +125,20 @@ public class MainController implements BasicController {
             }
         }
         System.out.println("value is: " + value);
+    }
+
+    private class StartButtonListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+
+        }
+    }
+
+    private class CloseWindowListener extends WindowAdapter implements WindowListener {
+        @Override
+        public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+            moveOnClose();
+            System.exit(0);
+        }
     }
 }

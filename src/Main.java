@@ -1,13 +1,6 @@
 import Controller.MainController;
-import Model.ProjectPathList;
-import Model.ProjectPathsModel;
-import Repository.AbstractRepository;
-import Repository.EmbeddedRepository;
-import Util.JaxbUtils;
-import View.AbstractWindowView;
+import View.AbstractMainWindowView;
 import View.MainWindowView;
-
-import javax.xml.bind.JAXBException;
 
 public class Main {
     private static final String MAIN_PAGE_VIEW = "mainView";
@@ -34,14 +27,10 @@ public class Main {
         }*/
 
 
-        AbstractWindowView mainView = new MainWindowView(MAIN_PAGE_VIEW);
-        AbstractRepository mainRepository = new EmbeddedRepository(EMBEDDED_REPOSITORY);
+        MainWindowView mainView = new MainWindowView(MAIN_PAGE_VIEW);
 
-        MainController controller = new MainController();
-        controller.addView(mainView);
-        controller.addRepository(mainRepository);
+        MainController controller = new MainController(mainView);
 
-        controller.run();
         controller.getTomcatPath("CATALINA_BASE");
     }
 }

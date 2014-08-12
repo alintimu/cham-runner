@@ -1,10 +1,14 @@
 package Controller;
 
+import Model.ProjectPathList;
+import Model.ProjectPathsModel;
 import Model.TextFieldModel;
 import Repository.AbstractRepository;
 import Util.FileVisitor;
+import Util.JaxbUtils;
 import View.AbstractWindowView;
 
+import javax.xml.bind.JAXBException;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -22,7 +26,7 @@ import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 public class MainController implements BasicController {
     protected List<AbstractWindowView> viewList = new ArrayList<>();
     protected List<AbstractRepository> repositoryList = new ArrayList<>();
-    private TextFieldModel textFieldModel;
+    private TextFieldModel textFieldModel = new TextFieldModel();
 
     public List<AbstractWindowView> getViewList() {
         return viewList;
@@ -147,8 +151,26 @@ public class MainController implements BasicController {
         deleteDirs();
     }
 
-    public void setPathToXml(int projectId, String project) {
+    public void setPathToXml(int projectId, String projectName) {
+        ProjectPathList pathList = new ProjectPathList();
 
+        switch (projectId){
+            case 1: {
+                pathList.getModelList().add(new ProjectPathsModel(projectId, textFieldModel.getTemplateSourcePath(), projectName, true, ""));
+            }
+            case 2: {
+                pathList.getModelList().add(new ProjectPathsModel(projectId, textFieldModel.getCpSourcePath(), projectName, true, ""));
+            }
+            case 3: {
+                pathList.getModelList().add(new ProjectPathsModel(projectId, textFieldModel.getSelfServiceSourcePath(), projectName, true, ""));
+            }
+        }
+
+        try {
+            JaxbUtils.convertToXml("config.xml", ProjectPathList.class, pathList);
+        } catch (JAXBException e) {
+            e.printStackTrace();
+        }
     }
 
     /* TODO

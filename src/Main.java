@@ -14,7 +14,7 @@ public class Main {
     private static final String EMBEDDED_REPOSITORY = "mainRepository";
 
     public static void main(String[] args) {
-        ProjectPathList pathList = new ProjectPathList();
+        /*ProjectPathList pathList = new ProjectPathList();
         pathList.getModelList().add(new ProjectPathsModel(1, "test/estes/fs/fsa/dsf/ds", "SS", true, ""));
         pathList.getModelList().add(new ProjectPathsModel(2, "dsa/dsa/dsa", "API", false, ""));
 
@@ -31,7 +31,7 @@ public class Main {
 
         } catch (JAXBException e) {
             e.printStackTrace();
-        }
+        }*/
 
 
         AbstractWindowView mainView = new MainWindowView(MAIN_PAGE_VIEW);

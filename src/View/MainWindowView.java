@@ -84,7 +84,7 @@ public class MainWindowView extends JFrame implements AbstractWindowView, ItemLi
         setPathTemplate.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
-                launchPopUp(1);
+                launchPopUp(1, "Templates");
             }
         });
 
@@ -132,7 +132,7 @@ public class MainWindowView extends JFrame implements AbstractWindowView, ItemLi
         setPathCp.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
-                launchPopUp(2);
+                launchPopUp(2, "Control Panel");
             }
         });
 
@@ -175,7 +175,7 @@ public class MainWindowView extends JFrame implements AbstractWindowView, ItemLi
         setPathSelfService.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
-                launchPopUp(3);
+                launchPopUp(3, "Self Service");
             }
         });
 
@@ -265,7 +265,7 @@ public class MainWindowView extends JFrame implements AbstractWindowView, ItemLi
         }
     }
 
-    public void launchPopUp(int projectId) {
+    public void launchPopUp(int projectId, String projectName) {
 
         JPanel popupPanel = new JPanel();
         popupPanel.setLayout(new BoxLayout(popupPanel, BoxLayout.PAGE_AXIS));
@@ -284,12 +284,15 @@ public class MainWindowView extends JFrame implements AbstractWindowView, ItemLi
             switch (projectId){
                 case 1: {
                     textFieldModel.setTemplateSourcePath(source_tf.getText());
+                    controller.setPathToXml(projectId, projectName);
                 }
                 case 2: {
                     textFieldModel.setCpSourcePath(source_tf.getText());
+                    controller.setPathToXml(projectId, projectName);
                 }
                 case 3: {
                     textFieldModel.setSelfServiceSourcePath(source_tf.getText());
+                    controller.setPathToXml(projectId, projectName);
                 }
             }
 

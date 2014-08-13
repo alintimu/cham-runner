@@ -29,11 +29,8 @@ import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 public class MainController {
     protected MainWindowView mainWindow;
 
-    public MainController(MainWindowView mainWindow) {
-        this.mainWindow = mainWindow;
-
-        mainWindow.addStartButtonListener(new StartButtonListener());
-        mainWindow.addWinListener(new CloseWindowListener());
+    public void run() {
+        mainWindow.run(this);
     }
 
     List<String> fileList = new ArrayList<String>();
@@ -43,6 +40,10 @@ public class MainController {
     }
 
     public void setMainWindow(MainWindowView mainWindow) {
+        this.mainWindow = mainWindow;
+    }
+
+    public void addView(MainWindowView mainWindow) {
         this.mainWindow = mainWindow;
     }
 
@@ -123,22 +124,6 @@ public class MainController {
                 value = new StringBuilder(value).insert(i,backslash).toString();
                 i++;
             }
-        }
-        System.out.println("value is: " + value);
-    }
-
-    private class StartButtonListener implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-
-        }
-    }
-
-    private class CloseWindowListener extends WindowAdapter implements WindowListener {
-        @Override
-        public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-            moveOnClose();
-            System.exit(0);
         }
     }
 }

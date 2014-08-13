@@ -5,9 +5,9 @@ import View.ModuleView;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by alin.timu on 8/12/2014.
@@ -17,42 +17,30 @@ public class ModuleController {
     private ModuleModel moduleModel;
 
     public ModuleController(ModuleView moduleView) {
-        this(moduleView, moduleView.getModuleModel());
+        this(moduleView, moduleView.getModel());
     }
 
     public ModuleController(ModuleView moduleView, ModuleModel moduleModel) {
         this.moduleModel = moduleModel;
         this.moduleView = moduleView;
 
-        moduleView.addAddModuleListener(new AddModuleListener());
-        moduleView.addRemoveModuleListener(new RemoveModuleListener());
-        moduleView.addBuildModuleListener(new BuildModuleListener());
-        moduleView.addCheckboxStateListener(new CheckboxStateListener());
-        moduleView.addPopupEventListener(new PopupEventListener());
+        moduleView.addBuildActionListener(new BuildActionListener());
+        moduleView.addEnablerItemListener(new EnablerItemListener());
     }
 
-    private class AddModuleListener implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            moduleView.launchPopUp(1, "");
-        }
-    }
-
-    /* moves .war files into and out of the webapps dir
-    *  0 out of webapps
-    *  1 into webapps */
+    /**
+     * moves .war files into and out of the webapps dir
+     *
+     * @param fileName
+     * @param opt      0 out of webapps; 1 into webapps;
+     */
     public void deployApp(String fileName, int opt) {
         String undeployed_dir = "C:\\tomcat\\undeployed\\";
         String webapps_dir = "C:\\tomcat\\webapps\\";
 
-        // move file from webapps to undeployed
         if (opt == 0) {
-            // source, destination, filename
             moveToDir(webapps_dir, undeployed_dir, fileName);
-
-            // move file from undeployed to webapps
         } else if (opt == 1) {
-            // source, destination, filename
             moveToDir(undeployed_dir, webapps_dir, fileName);
         }
     }
@@ -78,44 +66,26 @@ public class ModuleController {
         }
     }
 
-    private class RemoveModuleListener implements ActionListener {
+    public void buildProject() {
+
+    }
+
+    private class BuildActionListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-
+            moduleView.getBuildCommands();
         }
     }
 
-    private class BuildModuleListener implements ActionListener {
+    private class EnablerItemListener implements ItemListener {
         @Override
-        public void actionPerformed(ActionEvent e) {
-
-        }
-    }
-
-    private class CheckboxStateListener implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-
-        }
-    }
-
-    private class PopupEventListener implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-/*            switch (projectId){
-                case 1: {
-                    textFieldModel.setTemplateSourcePath(source_tf.getText());
-                    controller.setPathToXml(projectId, projectName);
-                }
-                case 2: {
-                    textFieldModel.setCpSourcePath(source_tf.getText());
-                    controller.setPathToXml(projectId, projectName);
-                }
-                case 3: {
-                    textFieldModel.setSelfServiceSourcePath(source_tf.getText());
-                    controller.setPathToXml(projectId, projectName);
-                }
-            }*/
+        public void itemStateChanged(ItemEvent e) {
+            // selected = 1, deselected = 2
+            if (e.getStateChange() == 1) {
+                moduleView.setEnabler("Undeploy " + moduleView.getWidgetName());
+            } else {
+                moduleView.setEnabler("Deploy " + moduleView.getWidgetName());
+            }
         }
     }
 }

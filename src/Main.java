@@ -29,8 +29,10 @@ public class Main {
 
         MainWindowView mainView = new MainWindowView(MAIN_PAGE_VIEW);
 
-        MainController controller = new MainController(mainView);
+        MainController controller = new MainController();
+        controller.addView(mainView);
 
+        controller.run();
         controller.getTomcatPath("CATALINA_BASE");
     }
 }

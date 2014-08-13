@@ -6,7 +6,7 @@ import javax.xml.bind.annotation.*;
  * Created by alin.timu on 8/8/2014.
  */
 @XmlAccessorOrder(value = XmlAccessOrder.ALPHABETICAL)
-@XmlType(propOrder = { "name", "path", "comment"})
+@XmlType(propOrder = { "name", "path", "buildParams"})
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement(name = "ProjectPathsModel")
 public class ProjectPathsModel {
@@ -18,19 +18,19 @@ public class ProjectPathsModel {
     private String name;
     @XmlAttribute(name = "enabled", required = false)
     private Boolean enabled;
-    @XmlElement(name = "comment", required = false, nillable = true)
-    private String comment;
+    @XmlElement(name = "buildParams", required = false, nillable = true)
+    private String buildParams;
 
     public ProjectPathsModel() {
         this(0, null, null, false, null);
     }
 
-    public ProjectPathsModel(Integer id, String path, String name, Boolean enabled, String comment) {
+    public ProjectPathsModel(Integer id, String path, String name, Boolean enabled, String buildCommands) {
         this.id = id;
         this.path = path;
         this.name = name;
         this.enabled = enabled;
-        this.comment = comment;
+        this.buildParams = buildCommands;
     }
 
     public Integer getId() {
@@ -65,12 +65,12 @@ public class ProjectPathsModel {
         this.enabled = enabled;
     }
 
-    public String getComment() {
-        return comment;
+    public String getBuildParams() {
+        return buildParams;
     }
 
-    public void setComment(String comment) {
-        this.comment = comment;
+    public void setBuildParams(String buildParams) {
+        this.buildParams = buildParams;
     }
 
     @Override
@@ -80,7 +80,7 @@ public class ProjectPathsModel {
                 ", path='" + path + '\'' +
                 ", name='" + name + '\'' +
                 ", enabled=" + enabled +
-                ", comment='" + comment + '\'' +
+                ", buildParams='" + buildParams + '\'' +
                 '}';
     }
 }

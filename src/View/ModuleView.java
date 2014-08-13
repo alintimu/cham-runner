@@ -5,84 +5,94 @@ import Model.ModuleModel;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemListener;
 
 /**
  * Created by alin.timu on 8/12/2014.
  */
-public class ModuleView extends JPanel {
-    private Boolean morphed = false;
-    private ModuleModel moduleModel;
-    private JButton popupHappened = new JButton("test");
-    private JButton removeModule = new JButton("Remove Module");
-    private JButton addThisModule = new JButton("Add Module");
+public class ModuleView extends JPanel implements AbstractModuleView {
+    private ModuleModel model;
+    private JCheckBox enabler;
+    protected String widgetName;
+    protected JButton removeModule;
+    protected JButton buildProject;
+    protected String buildCommands;
 
-    public ModuleView(ModuleModel moduleModel) {
-        popupHappened.setVisible(false);
-        this.moduleModel = moduleModel;
+    public ModuleView(ModuleModel moduleModel, String name) {
+        this.model = moduleModel;
+        this.widgetName = name;
+
         this.setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
-        this.setBorder(BorderFactory.createTitledBorder("Templates WAR"));
+        this.setBorder(BorderFactory.createTitledBorder(widgetName));
 
-        addThisModule.setPreferredSize(new Dimension(100,20));
-        this.add(addThisModule);
-
+        initializeComponents();
+        this.add(enabler);
+        this.add(removeModule);
+        this.add(buildProject);
+        this.setSize(600, 300);
+        this.setVisible(true);
     }
 
-    public ModuleModel getModuleModel() {
-        return moduleModel;
+    protected void initializeComponents() {
+        enabler = new JCheckBox("Deploy " + widgetName);
+        removeModule = new JButton("Remove Module");
+        buildProject = new JButton("Build");
+
+        removeModule.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Object source = e.getSource();
+                if (source instanceof Component) {
+                    Component comp = (Component)source;
+                    MainWindowView.projectsPanel.remove(comp.getParent());
+                    MainWindowView.revalidateRepaint();
+                }
+            }
+        });
     }
 
-    public void setModuleModel(ModuleModel moduleModel) {
-        this.moduleModel = moduleModel;
+    public JCheckBox getEnabler() {
+        return enabler;
     }
 
-    public boolean isMorphed() {
-        return morphed;
+    public void setEnabler(String enablerName) {
+        this.enabler.setText(enablerName);
     }
 
-    // TODO add actionListener to button inside of all these 3 bad-boys
-    public void addRemoveModuleListener(ActionListener adm) {
-        removeModule.addActionListener(adm);
+    public String getWidgetName() {
+        return widgetName;
     }
 
-    public void addBuildModuleListener(ActionListener abm) {
-
+    public void setWidgetName(String widgetName) {
+        this.widgetName = widgetName;
     }
 
-    public void addCheckboxStateListener(ActionListener acs) {
-
+    public String getBuildCommands() {
+        return buildCommands;
     }
 
-    public void addAddModuleListener(ActionListener aam) {
-        addThisModule.addActionListener(aam);
+    public void setBuildCommands(String buildCommands) {
+        this.buildCommands = buildCommands;
     }
 
-    public void addPopupEventListener(ActionListener ape) {
-        popupHappened.addActionListener(ape);
+    @Override
+    public ModuleModel getModel() {
+        return model;
     }
 
-    public void launchPopUp(int projectId, String projectName) {
-
-        JPanel popupPanel = new JPanel();
-        popupPanel.setLayout(new BoxLayout(popupPanel, BoxLayout.PAGE_AXIS));
-        JTextField source_tf = new JTextField();
-
-        source_tf.setPreferredSize(new Dimension(300, 25));
-
-        popupPanel.add(new JLabel("Source path:"));
-        popupPanel.add(source_tf);
-
-        int result = JOptionPane.showConfirmDialog(null, popupPanel,
-                "Enter the Source and Destination paths", JOptionPane.OK_CANCEL_OPTION);
-        if (result == JOptionPane.OK_OPTION) {
-            popupHappened.doClick();
-            morphView();
-        }
+    @Override
+    public void setModel(ModuleModel moduleModel) {
+        this.model = moduleModel;
     }
 
-    public void morphView() {
-        addThisModule.setVisible(false);
-        morphed = true;
+    public void addBuildActionListener(ActionListener bal) {
+        buildProject.addActionListener(bal);
+    }
+
+    public void addEnablerItemListener(ItemListener esl) {
+        enabler.addItemListener(esl);
     }
 
 }

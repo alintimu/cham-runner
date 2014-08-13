@@ -2,12 +2,15 @@ package View;
 
 import Controller.ModuleController;
 import Model.ModuleModel;
+import Util.ImageUtils;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemListener;
+import java.io.IOException;
 
 /**
  * Created by alin.timu on 8/12/2014.
@@ -29,16 +32,23 @@ public class ModuleView extends JPanel implements AbstractModuleView {
 
         initializeComponents();
         this.add(enabler);
-        this.add(removeModule);
         this.add(buildProject);
+        this.add(removeModule);
         this.setSize(600, 300);
         this.setVisible(true);
     }
 
     protected void initializeComponents() {
         enabler = new JCheckBox("Deploy " + widgetName);
-        removeModule = new JButton("Remove Module");
         buildProject = new JButton("Build");
+        removeModule = new JButton();
+        ImageIcon removeIcon = new ImageIcon("src/resources/delete.png");
+        removeIcon.setImage(ImageUtils.resizeImage(removeIcon.getImage(), 20, 20));
+        removeModule.setIcon(removeIcon);
+        removeModule.setOpaque(false);
+        removeModule.setContentAreaFilled(false);
+        removeModule.setBorderPainted(false);
+        removeModule.setMaximumSize(new Dimension(50, 50));
 
         removeModule.addActionListener(new ActionListener() {
             @Override

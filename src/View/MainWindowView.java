@@ -77,18 +77,21 @@ public class MainWindowView extends JFrame {
     public void launchPopUp() {
         JPanel popupPanel = new JPanel();
         popupPanel.setLayout(new BoxLayout(popupPanel, BoxLayout.PAGE_AXIS));
-        JTextField source_tf = new JTextField();
-
-        source_tf.setPreferredSize(new Dimension(300, 25));
+        JTextField projectName = new JTextField();
+        projectName.setPreferredSize(new Dimension(300, 25));
+        JTextField projectPath = new JTextField();
+        projectPath.setPreferredSize(new Dimension(300, 25));
 
         popupPanel.add(new JLabel("Project name:"));
-        popupPanel.add(source_tf);
+        popupPanel.add(projectName);
+        popupPanel.add(new JLabel("Project root path:"));
+        popupPanel.add(projectPath);
 
         int result = JOptionPane.showConfirmDialog(null, popupPanel,
                 "Enter the Source and Destination paths", JOptionPane.OK_CANCEL_OPTION);
         if (result == JOptionPane.OK_OPTION) {
 
-            createNewPanel(source_tf.getText());
+            createNewPanel(projectName.getText());
         }
     }
 

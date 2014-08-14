@@ -2,12 +2,15 @@ package Controller;
 
 import Model.ModuleModel;
 import View.ModuleView;
+import org.apache.maven.shared.invoker.*;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.io.File;
+import java.net.URL;
+import java.util.Arrays;
 
 /**
  * Created by alin.timu on 8/12/2014.
@@ -26,13 +29,15 @@ public class ModuleController {
 
         moduleView.addBuildActionListener(new BuildActionListener());
         moduleView.addEnablerItemListener(new EnablerItemListener());
+
+
     }
 
     /**
      * moves .war files into and out of the webapps dir
      *
      * @param fileName
-     * @param opt      0 out of webapps; 1 into webapps;
+     * @param opt 0 out of webapps; 1 into webapps;
      */
     public void deployApp(String fileName, int opt) {
         String undeployed_dir = "C:\\tomcat\\undeployed\\";
@@ -66,24 +71,36 @@ public class ModuleController {
         }
     }
 
-    public void buildProject() {
+    // TODO check for build params at some point and them as goals
+    public void buildProject(String buildParams, String path) {
+        InvocationRequest request = new DefaultInvocationRequest();
+        request.setPomFile(new File(path + "\\pom.xml"));
+        request.setGoals(Arrays.asList("clean", "install", "-Dskiptests"));
 
+        Invoker invoker = new DefaultInvoker();
+        try {
+            invoker.execute(request);
+        } catch (MavenInvocationException e) {
+            e.printStackTrace();
+        }
     }
 
     private class BuildActionListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            moduleView.getBuildCommands();
+            buildProject(moduleView.getBuildCommands(), moduleModel.getPath());
         }
     }
 
     private class EnablerItemListener implements ItemListener {
         @Override
         public void itemStateChanged(ItemEvent e) {
-            // selected = 1, deselected = 2
+            // getStateChanged selected = 1, deselected = 2
             if (e.getStateChange() == 1) {
+                deployApp(moduleView.getWidgetName(), 1);
                 moduleView.setEnabler("Undeploy " + moduleView.getWidgetName());
             } else {
+                deployApp(moduleView.getWidgetName(), 0);
                 moduleView.setEnabler("Deploy " + moduleView.getWidgetName());
             }
         }

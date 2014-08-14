@@ -14,6 +14,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowListener;
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
@@ -45,6 +46,10 @@ public class MainController {
 
     public void addView(MainWindowView mainWindow) {
         this.mainWindow = mainWindow;
+    }
+
+    public MainController() {
+        checkForConfig();
     }
 
     // TODO recheck fileList var
@@ -125,5 +130,15 @@ public class MainController {
                 i++;
             }
         }
+    }
+
+    private void checkForConfig() {
+        URL configUrl = this.getClass().getClassLoader().getResource("config.xml");
+        if (configUrl != null) {
+
+        }
+
+        String configString = configUrl.getPath().substring(1);
+        System.out.println(configString);
     }
 }

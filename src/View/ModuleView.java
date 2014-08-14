@@ -22,6 +22,7 @@ public class ModuleView extends JPanel implements AbstractModuleView {
 
     public ModuleView(ModuleModel moduleModel, String name) {
         this.model = moduleModel;
+        model.setName(name);
         this.widgetName = name;
 
         this.setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));

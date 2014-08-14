@@ -1,17 +1,13 @@
 package Controller;
 
+import Model.ModuleModel;
 import Model.ProjectPathList;
-import Model.ProjectPathsModel;
 import Util.FileVisitor;
 import Util.JaxbUtils;
-import View.AbstractMainWindowView;
+import Util.StringUtils;
 import View.MainWindowView;
 
 import javax.xml.bind.JAXBException;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowListener;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -49,7 +45,7 @@ public class MainController {
     }
 
     public MainController() {
-        checkForConfig();
+        hasConfig();
     }
 
     // TODO recheck fileList var
@@ -120,25 +116,50 @@ public class MainController {
         }
     }
 
-    public void getTomcatPath(String var) {
-        String value = System.getenv(var);
-        char backslash = '\\';
-        // make sure to add a backslash after each backslash because Windows
-        for (int i = 0; i < value.length(); i++) {
-            if (value.charAt(i) == backslash) {
-                value = new StringBuilder(value).insert(i,backslash).toString();
-                i++;
+    public String getTomcatPath(String var) {
+        String tomcatPath = System.getenv(var);
+        tomcatPath = StringUtils.makeWindowsPath(tomcatPath);
+
+        return tomcatPath;
+    }
+
+    private void loadProjectsFromConfig(String configPath) throws JAXBException {
+        ProjectPathList pathList = (ProjectPathList) JaxbUtils.convertToObject(configPath, ProjectPathList.class);
+    }
+
+    public void loadConfig() {
+        URL configUrl = this.getClass().getClassLoader().getResource("config.xml");
+        if (configUrl != null) {
+            try {
+                String configPath = configUrl.getPath().substring(1);
+                loadProjectsFromConfig(StringUtils.makeWindowsPath(configPath));
+            } catch (JAXBException e) {
+                e.printStackTrace();
             }
         }
     }
 
-    private void checkForConfig() {
-        URL configUrl = this.getClass().getClassLoader().getResource("config.xml");
+    /**
+     * Checks for the existence of a config file
+     * @return true / false
+     */
+    public boolean hasConfig() {
+        URL configUrl = this.getClass().getClassLoader().getResource("cucu.xml");
         if (configUrl != null) {
+            return true;
+        }
+        return false;
+    }
+
+    // TODO implement this bad-boy.
+    public void modelToConfig(ModuleModel moduleModel) {
+        // append to config if it already exists
+        if (hasConfig()) {
 
         }
+        // otherwise create a new config from scratch
+        else {
 
-        String configString = configUrl.getPath().substring(1);
-        System.out.println(configString);
+        }
     }
 }

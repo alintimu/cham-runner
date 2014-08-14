@@ -29,8 +29,6 @@ public class ModuleController {
 
         moduleView.addBuildActionListener(new BuildActionListener());
         moduleView.addEnablerItemListener(new EnablerItemListener());
-
-
     }
 
     /**

@@ -41,6 +41,7 @@ public class MainWindowView extends JFrame {
                 System.exit(0);
             }
         });
+
     }
 
     private void initializeComponents() {
@@ -94,6 +95,8 @@ public class MainWindowView extends JFrame {
 
     public void createNewPanel(String name) {
         ModuleModel moduleModel = new ModuleModel();
+        mainController.modelToConfig(moduleModel);
+
         ModuleView moduleView = new ModuleView(moduleModel, name);
         ModuleController moduleController = new ModuleController(moduleView);
 

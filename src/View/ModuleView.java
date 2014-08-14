@@ -27,20 +27,23 @@ public class ModuleView extends JPanel implements AbstractModuleView {
         this.model = moduleModel;
         this.widgetName = name;
 
-        this.setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
+        this.setLayout(new GridBagLayout());
         this.setBorder(BorderFactory.createTitledBorder(widgetName));
 
         initializeComponents();
         this.add(enabler);
+        //this.add(new JSeparator(JSeparator.VERTICAL),BorderLayout.PAGE_END);
         this.add(buildProject);
+        //this.add(new JSeparator(JSeparator.VERTICAL),BorderLayout.LINE_START);
         this.add(removeModule);
-        this.setSize(600, 300);
+        this.setMaximumSize(new Dimension(600, 70));
         this.setVisible(true);
     }
 
     protected void initializeComponents() {
         enabler = new JCheckBox("Deploy " + widgetName);
         buildProject = new JButton("Build");
+        buildProject.setMaximumSize(new Dimension(10, 10));
         removeModule = new JButton();
         ImageIcon removeIcon = new ImageIcon("src/resources/delete.png");
         removeIcon.setImage(ImageUtils.resizeImage(removeIcon.getImage(), 20, 20));
@@ -48,7 +51,7 @@ public class ModuleView extends JPanel implements AbstractModuleView {
         removeModule.setOpaque(false);
         removeModule.setContentAreaFilled(false);
         removeModule.setBorderPainted(false);
-        removeModule.setMaximumSize(new Dimension(50, 50));
+        removeModule.setMaximumSize(new Dimension(20, 20));
 
         removeModule.addActionListener(new ActionListener() {
             @Override

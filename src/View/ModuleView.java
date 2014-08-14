@@ -6,6 +6,8 @@ import Util.ImageUtils;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -22,37 +24,61 @@ public class ModuleView extends JPanel implements AbstractModuleView {
     protected JButton removeModule;
     protected JButton buildProject;
     protected String buildCommands;
+    private JPanel enablerPanel;
+    private JPanel buildPanel;
+    private JPanel deletePanel;
 
     public ModuleView(ModuleModel moduleModel, String name) {
         this.model = moduleModel;
         model.setName(name);
         this.widgetName = name;
 
-        this.setLayout(new GridBagLayout());
+        this.setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
         this.setBorder(BorderFactory.createTitledBorder(widgetName));
 
         initializeComponents();
-        this.add(enabler);
-        //this.add(new JSeparator(JSeparator.VERTICAL),BorderLayout.PAGE_END);
-        this.add(buildProject);
-        //this.add(new JSeparator(JSeparator.VERTICAL),BorderLayout.LINE_START);
-        this.add(removeModule);
-        this.setMaximumSize(new Dimension(600, 70));
+        this.add(enablerPanel);
+        this.add(buildPanel);
+        deletePanel.setAlignmentX(Component.RIGHT_ALIGNMENT);
+        this.add(deletePanel);
+        this.setPreferredSize(new Dimension(800, 70));
+        this.setMaximumSize(new Dimension(800, 70));
         this.setVisible(true);
     }
 
     protected void initializeComponents() {
+        enablerPanel = new JPanel();
+        enablerPanel.setLayout(new BoxLayout(enablerPanel, BoxLayout.LINE_AXIS));
+        buildPanel = new JPanel();
+        buildPanel.setLayout(new BoxLayout(buildPanel, BoxLayout.LINE_AXIS));
+        deletePanel = new JPanel();
+        deletePanel.setLayout(new BoxLayout(deletePanel, BoxLayout.LINE_AXIS));
+
         enabler = new JCheckBox("Deploy " + widgetName);
+        enabler.setMaximumSize(new Dimension(700, 30));
+        enabler.setPreferredSize(new Dimension(700, 30));
         buildProject = new JButton("Build");
-        buildProject.setMaximumSize(new Dimension(10, 10));
+        buildProject.setMaximumSize(new Dimension(100, 30));
         removeModule = new JButton();
-        ImageIcon removeIcon = new ImageIcon("src/resources/delete.png");
+        final ImageIcon removeIcon = new ImageIcon("resources/images/delete.png");
         removeIcon.setImage(ImageUtils.resizeImage(removeIcon.getImage(), 20, 20));
+        final ImageIcon removeIconHover = new ImageIcon("resources/images/delete_hover.png");
+        removeIconHover.setImage(ImageUtils.resizeImage(removeIconHover.getImage(), 20, 20));
         removeModule.setIcon(removeIcon);
+        removeModule.getModel().addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                ButtonModel model = (ButtonModel) e.getSource();
+                if (model.isRollover()) {
+                    removeModule.setIcon(removeIconHover);
+                } else {
+                    removeModule.setIcon(removeIcon);
+                }
+            }
+        });
         removeModule.setOpaque(false);
         removeModule.setContentAreaFilled(false);
         removeModule.setBorderPainted(false);
-        removeModule.setMaximumSize(new Dimension(20, 20));
 
         removeModule.addActionListener(new ActionListener() {
             @Override
@@ -60,11 +86,14 @@ public class ModuleView extends JPanel implements AbstractModuleView {
                 Object source = e.getSource();
                 if (source instanceof Component) {
                     Component comp = (Component)source;
-                    MainWindowView.projectsPanel.remove(comp.getParent());
+                    MainWindowView.projectsPanel.remove(comp.getParent().getParent());
                     MainWindowView.revalidateRepaint();
                 }
             }
         });
+        enablerPanel.add(enabler);
+        buildPanel.add(buildProject);
+        deletePanel.add(removeModule);
     }
 
     public JCheckBox getEnabler() {

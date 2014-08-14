@@ -135,10 +135,10 @@ public class MainController {
     private void checkForConfig() {
         URL configUrl = this.getClass().getClassLoader().getResource("config.xml");
         if (configUrl != null) {
-
+            String configString = configUrl.getPath().substring(1);
+            System.out.println(configString);
         }
 
-        String configString = configUrl.getPath().substring(1);
-        System.out.println(configString);
+
     }
 }

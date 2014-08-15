@@ -1,7 +1,7 @@
 package Util;
 
 /**
- * Created by rares.urdea on 14.08.2014.
+ * Utils for string manipulation and stuff
  */
 public class StringUtils {
     /**

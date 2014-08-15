@@ -21,7 +21,7 @@ import java.util.List;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
 /**
- * Created by alin.timu on 8/8/2014.
+ * Controller for main app behavior. Also handles operations requested through the MainWindowsView.
  */
 public class MainController {
     protected MainWindowView mainWindow;
@@ -57,7 +57,7 @@ public class MainController {
         fileList.add("selfService");
 
         for (String s : fileList) {
-            Path source_file = Paths.get("C:\\tomcat\\webapps\\" + s +".war");
+            Path source_file = Paths.get("C:\\tomcat\\webapps\\" + s + ".war");
             Path destination_file = Paths.get("C:\\tomcat\\undeployed\\" + s + ".war");
             try {
                 Files.move(source_file, destination_file, REPLACE_EXISTING);
@@ -107,10 +107,10 @@ public class MainController {
                 continue;
             }
             FileVisitor delFileVisitor = new FileVisitor();
-            try{
+            try {
                 Files.walkFileTree(directoryToDelete, delFileVisitor);
                 // will squirt some silly stack trace when dir isn't there, regardless of catch
-            }catch(IOException ioe){
+            } catch (IOException ioe) {
                 ioe.printStackTrace();
             }
         }
@@ -127,34 +127,45 @@ public class MainController {
         ProjectPathList pathList = (ProjectPathList) JaxbUtils.convertToObject(configPath, ProjectPathList.class);
     }
 
+    /**
+     *
+     */
     public void loadConfig() {
-        URL configUrl = this.getClass().getClassLoader().getResource("config.xml");
-        if (configUrl != null) {
-            try {
-                String configPath = configUrl.getPath().substring(1);
-                loadProjectsFromConfig(StringUtils.makeWindowsPath(configPath));
-            } catch (JAXBException e) {
-                e.printStackTrace();
+        String configPath = hasConfig();
+        try {
+            loadProjectsFromConfig(StringUtils.makeWindowsPath(configPath));
+        } catch (JAXBException | NullPointerException e ) {
+            if (e instanceof NullPointerException) {
+                System.out.println("Unable to load config, path was null, check in hasConfig()");
             }
+            e.printStackTrace();
         }
+
     }
 
     /**
      * Checks for the existence of a config file
-     * @return true / false
+     *
+     * @return String with path to config if it exists, null otherwise.
      */
-    public boolean hasConfig() {
+    public String hasConfig() {
         URL configUrl = this.getClass().getClassLoader().getResource("cucu.xml");
         if (configUrl != null) {
-            return true;
+            return configUrl.getPath().substring(1);
         }
-        return false;
+        return null;
     }
 
-    // TODO implement this bad-boy.
+    /**
+     * Writes the given model to the config. If the config file does not exist, it is created.
+     * If the config file exists, the data is appended.
+     *
+     * @param moduleModel
+     */
+    /* TODO implement this bad-boy. */
     public void modelToConfig(ModuleModel moduleModel) {
         // append to config if it already exists
-        if (hasConfig()) {
+        if (hasConfig() != null) {
 
         }
         // otherwise create a new config from scratch

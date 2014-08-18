@@ -47,6 +47,9 @@ public class ModuleView extends JPanel implements AbstractModuleView {
     }
 
     protected void initializeComponents() {
+        final ImageIcon removeIcon = new ImageIcon("resources/images/delete.png");
+        final ImageIcon removeIconHover = new ImageIcon("resources/images/delete_hover.png");
+
         enablerPanel = new JPanel();
         enablerPanel.setLayout(new BoxLayout(enablerPanel, BoxLayout.LINE_AXIS));
         buildPanel = new JPanel();
@@ -60,9 +63,7 @@ public class ModuleView extends JPanel implements AbstractModuleView {
         buildProject = new JButton("Build");
         buildProject.setMaximumSize(new Dimension(100, 30));
         removeModule = new JButton();
-        final ImageIcon removeIcon = new ImageIcon("resources/images/delete.png");
         removeIcon.setImage(ImageUtils.resizeImage(removeIcon.getImage(), 20, 20));
-        final ImageIcon removeIconHover = new ImageIcon("resources/images/delete_hover.png");
         removeIconHover.setImage(ImageUtils.resizeImage(removeIconHover.getImage(), 20, 20));
         removeModule.setIcon(removeIcon);
         removeModule.getModel().addChangeListener(new ChangeListener() {

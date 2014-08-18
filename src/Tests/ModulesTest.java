@@ -8,14 +8,10 @@ import View.MainWindowView;
  */
 public class ModulesTest {
 
-    private static MainWindowView mwv;
-
-    public static void main(String[] args) {
-
-        mwv = new MainWindowView("Test");
+    public ModulesTest(MainWindowView mainWindowView) {
 
         for(int i=0; i< 10; i++) {
-            mwv.createNewPanel("Test " + i);
+            mainWindowView.createNewPanel("Test " + i);
         }
 
     }

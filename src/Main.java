@@ -1,4 +1,5 @@
 import Controller.MainController;
+import Tests.ModulesTest;
 import View.AbstractMainWindowView;
 import View.MainWindowView;
 
@@ -31,6 +32,13 @@ public class Main {
 
         MainController controller = new MainController();
         controller.addView(mainView);
+
+        /**
+         * Testing the module view interface by creating 10 modules. Comment when not needed.         *
+         */
+        ModulesTest modulesTest = new ModulesTest(mainView);
+
+
 
         controller.run();
         controller.getTomcatPath("CATALINA_BASE");

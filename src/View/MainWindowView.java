@@ -29,6 +29,7 @@ public class MainWindowView extends JFrame {
         VIEW_IDENTIFIER = mainPageView;
         initializeComponents();
         scrollPane = new JScrollPane(windowPanel);
+        scrollPane.getVerticalScrollBar().setUnitIncrement(16);
         this.add(scrollPane);
         this.setSize(900, 400);
         this.setResizable(false);
@@ -39,7 +40,7 @@ public class MainWindowView extends JFrame {
         this.addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
             public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-               // mainController.moveOnClose();
+                mainController.moveOnClose();
                 System.exit(0);
             }
         });
@@ -103,7 +104,7 @@ public class MainWindowView extends JFrame {
         ModuleController moduleController = new ModuleController(moduleView);
 
         projectsPanel.add(moduleView.widgetName, moduleView);
-        windowPanel.revalidate();
+        revalidateRepaint();
 
         moduleViewList.add(moduleView);
     }

@@ -1,17 +1,13 @@
 package Controller;
 
+import Model.ModuleModel;
 import Model.ProjectPathList;
-import Model.ProjectPathsModel;
 import Util.FileVisitor;
 import Util.JaxbUtils;
-import View.AbstractMainWindowView;
+import Util.StringUtils;
 import View.MainWindowView;
 
 import javax.xml.bind.JAXBException;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowListener;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -25,7 +21,7 @@ import java.util.List;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
 /**
- * Created by alin.timu on 8/8/2014.
+ * Controller for main app behavior. Also handles operations requested through the MainWindowsView.
  */
 public class MainController {
     protected MainWindowView mainWindow;
@@ -49,10 +45,10 @@ public class MainController {
     }
 
     public MainController() {
-        checkForConfig();
+        hasConfig();
     }
 
-    // TODO recheck fileList var
+    // TODO Priority LOW recheck fileList var
     // if any files remain in the webapps dir on exit, use this to move them to undeployed
     // used in MainWindowView
     public void moveOnClose() {
@@ -61,7 +57,7 @@ public class MainController {
         fileList.add("selfService");
 
         for (String s : fileList) {
-            Path source_file = Paths.get("C:\\tomcat\\webapps\\" + s +".war");
+            Path source_file = Paths.get("C:\\tomcat\\webapps\\" + s + ".war");
             Path destination_file = Paths.get("C:\\tomcat\\undeployed\\" + s + ".war");
             try {
                 Files.move(source_file, destination_file, REPLACE_EXISTING);
@@ -101,7 +97,7 @@ public class MainController {
         }
     }
 
-    /* TODO recheck fileList var and initialize propertly */
+    /* TODO Priority LOW recheck fileList var and initialize propertly */
     public void deleteDirs() {
         for (String s : fileList) {
             Path directoryToDelete = Paths.get("C:\\tomcat\\webapps\\" + s + "\\");
@@ -111,34 +107,68 @@ public class MainController {
                 continue;
             }
             FileVisitor delFileVisitor = new FileVisitor();
-            try{
+            try {
                 Files.walkFileTree(directoryToDelete, delFileVisitor);
                 // will squirt some silly stack trace when dir isn't there, regardless of catch
-            }catch(IOException ioe){
+            } catch (IOException ioe) {
                 ioe.printStackTrace();
             }
         }
     }
 
-    public void getTomcatPath(String var) {
-        String value = System.getenv(var);
-        char backslash = '\\';
-        // make sure to add a backslash after each backslash because Windows
-        for (int i = 0; i < value.length(); i++) {
-            if (value.charAt(i) == backslash) {
-                value = new StringBuilder(value).insert(i,backslash).toString();
-                i++;
-            }
-        }
+    public String getTomcatPath(String var) {
+        String tomcatPath = System.getenv(var);
+        tomcatPath = StringUtils.makeWindowsPath(tomcatPath);
+
+        return tomcatPath;
     }
 
-    private void checkForConfig() {
-        URL configUrl = this.getClass().getClassLoader().getResource("config.xml");
-        if (configUrl != null) {
-            String configString = configUrl.getPath().substring(1);
-            System.out.println(configString);
+    private void loadProjectsFromConfig(String configPath) throws JAXBException {
+        ProjectPathList pathList = (ProjectPathList) JaxbUtils.convertToObject(configPath, ProjectPathList.class);
+    }
+
+    /**
+     *
+     */
+    public void loadConfig() {
+        String configPath = hasConfig();
+        try {
+            loadProjectsFromConfig(StringUtils.makeWindowsPath(configPath));
+        } catch (JAXBException | NullPointerException e ) {
+            if (e instanceof NullPointerException) {
+                System.out.println("Unable to load config, path was null, check in hasConfig()");
+            }
+            e.printStackTrace();
         }
 
+    }
 
+    /**
+     * Checks for the existence of a config file
+     *
+     * @return String with path to config if it exists, null otherwise.
+     */
+    public String hasConfig() {
+        URL configUrl = this.getClass().getClassLoader().getResource("cucu.xml");
+        if (configUrl != null) {
+            return configUrl.getPath().substring(1);
+        }
+        return null;
+    }
+
+    /**
+     * Writes the given model to the config. If the config file does not exist, it is created.
+     * If the config file exists, the data is appended.
+     *
+     * @param moduleModel
+     */
+    /* TODO Priority HIGH implement this bad-boy. */
+    public void modelToConfig(ModuleModel moduleModel) {
+        // append to config if it already exists
+        if (hasConfig() != null) {
+        }
+        // otherwise create a new config from scratch
+        else {
+        }
     }
 }

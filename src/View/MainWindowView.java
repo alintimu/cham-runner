@@ -11,7 +11,7 @@ import java.awt.event.*;
 import java.util.ArrayList;
 
 /**
- * Created by alin.timu on 8/8/2014.
+ * Main application view.
  */
 public class MainWindowView extends JFrame {
     // Components
@@ -44,6 +44,7 @@ public class MainWindowView extends JFrame {
                 System.exit(0);
             }
         });
+
     }
 
     private void initializeComponents() {
@@ -98,8 +99,15 @@ public class MainWindowView extends JFrame {
         }
     }
 
+    /**
+     * Creates a new module and adds it to the main window
+     * Don't use this when reading from the config, as it also writes to the config
+     * @param name - The name of the new module
+     */
     public void createNewPanel(String name) {
         ModuleModel moduleModel = new ModuleModel();
+        mainController.modelToConfig(moduleModel);
+
         ModuleView moduleView = new ModuleView(moduleModel, name);
         ModuleController moduleController = new ModuleController(moduleView);
 
@@ -107,6 +115,10 @@ public class MainWindowView extends JFrame {
         revalidateRepaint();
 
         moduleViewList.add(moduleView);
+    }
+
+    public void addModuleFromConfig(String name, ModuleModel moduleModel) {
+
     }
 
     public static void revalidateRepaint() {

@@ -13,7 +13,7 @@ import java.net.URL;
 import java.util.Arrays;
 
 /**
- * Created by alin.timu on 8/12/2014.
+ * Controller for project modules
  */
 public class ModuleController {
     private ModuleView moduleView;
@@ -29,8 +29,6 @@ public class ModuleController {
 
         moduleView.addBuildActionListener(new BuildActionListener());
         moduleView.addEnablerItemListener(new EnablerItemListener());
-
-
     }
 
     /**
@@ -71,7 +69,7 @@ public class ModuleController {
         }
     }
 
-    // TODO check for build params at some point and them as goals
+    // TODO Priority MED check for build params at some point add them as goals
     public void buildProject(String buildParams, String path) {
         InvocationRequest request = new DefaultInvocationRequest();
         request.setPomFile(new File(path + "\\pom.xml"));

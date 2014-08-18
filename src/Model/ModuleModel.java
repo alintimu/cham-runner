@@ -1,8 +1,10 @@
 package Model;
 
+import Util.GenericExtensionFilter;
 import org.apache.commons.math3.random.RandomDataGenerator;
 import org.apache.commons.math3.random.RandomGenerator;
 
+import java.io.File;
 import java.io.Serializable;
 import java.util.Random;
 
@@ -14,9 +16,14 @@ public class ModuleModel implements Serializable {
     private String name;
     private Boolean isBuilt;
     private String path;
+    private String warName;
 
     public ModuleModel() {
         this(genId(), "default", false, "default");
+    }
+
+    public ModuleModel(String name, String path) {
+        this(genId(), name, false, path);
     }
 
     public ModuleModel(Integer id, String name, Boolean isBuilt, String path) {
@@ -24,6 +31,35 @@ public class ModuleModel implements Serializable {
         this.name = name;
         this.isBuilt = isBuilt;
         this.path = path;
+        setWarName();
+    }
+
+    public ModuleModel(ProjectModel projectModel) {
+        setId(projectModel.getId());
+        setName(projectModel.getName());
+        setIsBuilt(projectModel.getEnabled());
+        setPath(projectModel.getAbsolutePath());
+    }
+
+    public String getWarName() {
+        return warName;
+    }
+
+    private void setWarName() {
+        String targetPath = path + "\\target";
+        File targetFolder = new File(targetPath);
+        GenericExtensionFilter filter = new GenericExtensionFilter(".war");
+        String[] fileList = targetFolder.list(filter);
+
+        if (fileList.length == 0) {
+            System.out.println("no .war file found");
+            return;
+        } else {
+            for (String file : fileList) {
+                warName = new StringBuffer(targetPath).append(File.separator)
+                        .append(file).toString();
+            }
+        }
     }
 
     public Integer getId() {

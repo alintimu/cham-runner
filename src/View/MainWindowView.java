@@ -94,8 +94,7 @@ public class MainWindowView extends JFrame {
         int result = JOptionPane.showConfirmDialog(null, popupPanel,
                 "Enter the Source and Destination paths", JOptionPane.OK_CANCEL_OPTION);
         if (result == JOptionPane.OK_OPTION) {
-
-            createNewPanel(projectName.getText());
+            createNewPanel(projectName.getText(), projectPath.getText());
         }
     }
 
@@ -104,11 +103,11 @@ public class MainWindowView extends JFrame {
      * Don't use this when reading from the config, as it also writes to the config
      * @param name - The name of the new module
      */
-    public void createNewPanel(String name) {
-        ModuleModel moduleModel = new ModuleModel();
+    public void createNewPanel(String name, String path) {
+        ModuleModel moduleModel = new ModuleModel(name, path);
         mainController.modelToConfig(moduleModel);
 
-        ModuleView moduleView = new ModuleView(moduleModel, name);
+        ModuleView moduleView = new ModuleView(moduleModel);
         ModuleController moduleController = new ModuleController(moduleView);
 
         projectsPanel.add(moduleView.widgetName, moduleView);
@@ -117,8 +116,14 @@ public class MainWindowView extends JFrame {
         moduleViewList.add(moduleView);
     }
 
-    public void addModuleFromConfig(String name, ModuleModel moduleModel) {
+    public void addModuleFromConfig(ModuleModel moduleModel) {
+        ModuleView moduleView = new ModuleView(moduleModel);
+        ModuleController moduleController = new ModuleController(moduleView);
 
+        projectsPanel.add(moduleView.widgetName, moduleView);
+        revalidateRepaint();
+
+        moduleViewList.add(moduleView);
     }
 
     public static void revalidateRepaint() {

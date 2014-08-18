@@ -1,20 +1,16 @@
 package Controller;
 
 import Model.ModuleModel;
-import Model.ProjectPathList;
+import Model.ProjectModel;
+import Model.ProjectModelList;
 import Util.FileVisitor;
 import Util.JaxbUtils;
 import Util.StringUtils;
 import View.MainWindowView;
 
 import javax.xml.bind.JAXBException;
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.NoSuchFileException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.io.*;
+import java.nio.file.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,9 +21,24 @@ import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
  */
 public class MainController {
     protected MainWindowView mainWindow;
+    protected final String CONFIG_PATH = System.getenv("USERPROFILE") + "\\cr_config.xml";
+    protected File configFile;
+    protected boolean hasConfig;
 
     public void run() {
         mainWindow.run(this);
+
+        /* if config doesn't exist, create it */
+        if (!hasConfig) {
+            configFile = new File(CONFIG_PATH);
+            try {
+                configFile.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            loadConfig();
+        }
     }
 
     List<String> fileList = new ArrayList<String>();
@@ -45,10 +56,10 @@ public class MainController {
     }
 
     public MainController() {
-        hasConfig();
+        hasConfig = hasConfig();
     }
 
-    // TODO Priority LOW recheck fileList var
+    // TODO Priority LOW generate fileList based on .war extension
     // if any files remain in the webapps dir on exit, use this to move them to undeployed
     // used in MainWindowView
     public void moveOnClose() {
@@ -73,28 +84,6 @@ public class MainController {
 
         // and delete dirs
         deleteDirs();
-    }
-
-    public void setPathToXml(int projectId, String projectName) {
-        ProjectPathList pathList = new ProjectPathList();
-
-/*        switch (projectId){
-            case 1: {
-                pathList.getModelList().add(new ProjectPathsModel(projectId, textFieldModel.getTemplateSourcePath(), projectName, true, ""));
-            }
-            case 2: {
-                pathList.getModelList().add(new ProjectPathsModel(projectId, textFieldModel.getCpSourcePath(), projectName, true, ""));
-            }
-            case 3: {
-                pathList.getModelList().add(new ProjectPathsModel(projectId, textFieldModel.getSelfServiceSourcePath(), projectName, true, ""));
-            }
-        }*/
-
-        try {
-            JaxbUtils.convertToXml("config.xml", ProjectPathList.class, pathList);
-        } catch (JAXBException e) {
-            e.printStackTrace();
-        }
     }
 
     /* TODO Priority LOW recheck fileList var and initialize propertly */
@@ -124,23 +113,25 @@ public class MainController {
     }
 
     private void loadProjectsFromConfig(String configPath) throws JAXBException {
-        ProjectPathList pathList = (ProjectPathList) JaxbUtils.convertToObject(configPath, ProjectPathList.class);
+        ProjectModelList projectModelList = (ProjectModelList) JaxbUtils.convertToObject(configPath, ProjectModelList.class);
+        for (ProjectModel projectModel : projectModelList.getModelList()) {
+            ModuleModel moduleModel = new ModuleModel(projectModel);
+            mainWindow.addModuleFromConfig(moduleModel);
+        }
     }
 
     /**
      *
      */
     public void loadConfig() {
-        String configPath = hasConfig();
         try {
-            loadProjectsFromConfig(StringUtils.makeWindowsPath(configPath));
-        } catch (JAXBException | NullPointerException e ) {
+            loadProjectsFromConfig(StringUtils.makeWindowsPath(CONFIG_PATH));
+        } catch (JAXBException | NullPointerException e) {
             if (e instanceof NullPointerException) {
                 System.out.println("Unable to load config, path was null, check in hasConfig()");
             }
             e.printStackTrace();
         }
-
     }
 
     /**
@@ -148,13 +139,15 @@ public class MainController {
      *
      * @return String with path to config if it exists, null otherwise.
      */
-    public String hasConfig() {
-        URL configUrl = this.getClass().getClassLoader().getResource("cucu.xml");
-        if (configUrl != null) {
-            return configUrl.getPath().substring(1);
+    public boolean hasConfig() {
+        configFile = new File(CONFIG_PATH);
+        if (configFile.exists() && !configFile.isDirectory()) {
+            return true;
         }
-        return null;
+        return false;
     }
+
+
 
     /**
      * Writes the given model to the config. If the config file does not exist, it is created.
@@ -165,10 +158,29 @@ public class MainController {
     /* TODO Priority HIGH implement this bad-boy. */
     public void modelToConfig(ModuleModel moduleModel) {
         // append to config if it already exists
-        if (hasConfig() != null) {
+        if (hasConfig) {
+            writeModelToConfig(moduleModel);
         }
         // otherwise create a new config from scratch
         else {
+            writeModelToConfig(moduleModel);
+        }
+    }
+
+    private void writeModelToConfig(ModuleModel moduleModel) {
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(CONFIG_PATH));
+            if (br.readLine() == null) {
+                ProjectModelList projectModelList = new ProjectModelList();
+                projectModelList.getModelList().add(new ProjectModel(moduleModel));
+                JaxbUtils.convertToXml(CONFIG_PATH, ProjectModelList.class, projectModelList);
+            } else {
+                ProjectModelList projectModelList = (ProjectModelList) JaxbUtils.convertToObject(CONFIG_PATH, ProjectModelList.class);
+                projectModelList.getModelList().add(new ProjectModel(moduleModel));
+                JaxbUtils.convertToXml(CONFIG_PATH, ProjectModelList.class, projectModelList);
+            }
+        } catch (JAXBException | IOException e) {
+            e.printStackTrace();
         }
     }
 }

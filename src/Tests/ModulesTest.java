@@ -11,7 +11,7 @@ public class ModulesTest {
     public ModulesTest(MainWindowView mainWindowView) {
 
         for(int i=0; i< 10; i++) {
-            mainWindowView.createNewPanel("Test " + i);
+            mainWindowView.createNewPanel("Test " + i, null);
         }
 
     }

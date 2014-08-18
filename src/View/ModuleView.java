@@ -25,7 +25,7 @@ public class ModuleView extends JPanel implements AbstractModuleView {
     private JPanel buildPanel;
     private JPanel deletePanel;
 
-    public ModuleView(ModuleModel moduleModel, String name) {
+    public ModuleView(ModuleModel moduleModel) {
         this.model = moduleModel;
 
         /* if model has data, construct View according to Model */
@@ -35,7 +35,7 @@ public class ModuleView extends JPanel implements AbstractModuleView {
             constructModelFromView(this);
         }
 
-        this.widgetName = name;
+        this.widgetName = model.getName();
 
         /* Initialize components and add them to the panel */
         initializeComponents();

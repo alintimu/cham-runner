@@ -102,9 +102,6 @@ public class ModuleView extends JPanel implements AbstractModuleView {
      * Adds initialized components to the ModuleView Panel
      */
     protected void addComponentsToPanel() {
-        this.add(enabler);
-        this.add(removeModule);
-        this.add(buildProject);
         this.add(enablerPanel);
         this.add(buildPanel);
         this.add(deletePanel);

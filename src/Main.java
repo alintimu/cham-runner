@@ -5,7 +5,6 @@ import View.MainWindowView;
 
 public class Main {
     private static final String MAIN_PAGE_VIEW = "mainView";
-    private static final String EMBEDDED_REPOSITORY = "mainRepository";
 
     public static void main(String[] args) {
         /*ProjectPathList pathList = new ProjectPathList();
@@ -33,14 +32,12 @@ public class Main {
         MainController controller = new MainController();
         controller.addView(mainView);
 
+        controller.run();
+        controller.getTomcatPath("CATALINA_BASE");
+
         /**
          * Testing the module view interface by creating 10 modules. Comment when not needed.         *
          */
         ModulesTest modulesTest = new ModulesTest(mainView);
-
-
-
-        controller.run();
-        controller.getTomcatPath("CATALINA_BASE");
     }
 }

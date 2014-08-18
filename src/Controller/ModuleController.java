@@ -72,7 +72,7 @@ public class ModuleController {
     // TODO Priority MED check for build params at some point add them as goals
     public void buildProject(String buildParams, String path) {
         InvocationRequest request = new DefaultInvocationRequest();
-        request.setPomFile(new File(path + "\\pom.xml"));
+        request.setPomFile(new File(path + "\\target\\pom.xml"));
         request.setGoals(Arrays.asList("clean", "install", "-Dskiptests"));
 
         Invoker invoker = new DefaultInvoker();

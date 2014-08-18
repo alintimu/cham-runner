@@ -3,6 +3,7 @@ package Controller;
 import Model.ModuleModel;
 import Model.ProjectModel;
 import Model.ProjectModelList;
+import Repository.StaticVars;
 import Util.FileVisitor;
 import Util.JaxbUtils;
 import Util.StringUtils;
@@ -21,16 +22,16 @@ import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
  */
 public class MainController {
     protected MainWindowView mainWindow;
-    protected final String CONFIG_PATH = System.getenv("USERPROFILE") + "\\cr_config.xml";
     protected File configFile;
     protected boolean hasConfig;
+    private List<String> fileList = new ArrayList<String>();
 
     public void run() {
         mainWindow.run(this);
 
         /* if config doesn't exist, create it */
         if (!hasConfig) {
-            configFile = new File(CONFIG_PATH);
+            configFile = new File(StaticVars.CONFIG_PATH);
             try {
                 configFile.createNewFile();
             } catch (IOException e) {
@@ -41,10 +42,12 @@ public class MainController {
         }
     }
 
-    List<String> fileList = new ArrayList<String>();
-
     public MainWindowView getMainWindow() {
         return mainWindow;
+    }
+
+    public List<String> getFileList() {
+        return fileList;
     }
 
     public void setMainWindow(MainWindowView mainWindow) {
@@ -55,7 +58,13 @@ public class MainController {
         this.mainWindow = mainWindow;
     }
 
+    public void setConfigPath() {
+        StaticVars.CONFIG_PATH = System.getenv("USERPROFILE") + "\\cr_config.xml";
+    }
+
     public MainController() {
+        setTomcatPath();
+        setConfigPath();
         hasConfig = hasConfig();
     }
 
@@ -63,13 +72,9 @@ public class MainController {
     // if any files remain in the webapps dir on exit, use this to move them to undeployed
     // used in MainWindowView
     public void moveOnClose() {
-        fileList.add("templates");
-        fileList.add("cp");
-        fileList.add("selfService");
-
         for (String s : fileList) {
-            Path source_file = Paths.get("C:\\tomcat\\webapps\\" + s + ".war");
-            Path destination_file = Paths.get("C:\\tomcat\\undeployed\\" + s + ".war");
+            Path source_file = Paths.get(StaticVars.TOMCAT_PATH + StaticVars.WEBAPPS + s + ".war");
+            Path destination_file = Paths.get(StaticVars.TOMCAT_PATH + "\\undeployed\\" + s + ".war");
             try {
                 Files.move(source_file, destination_file, REPLACE_EXISTING);
             } catch (IOException e) {
@@ -89,8 +94,8 @@ public class MainController {
     /* TODO Priority LOW recheck fileList var and initialize propertly */
     public void deleteDirs() {
         for (String s : fileList) {
-            Path directoryToDelete = Paths.get("C:\\tomcat\\webapps\\" + s + "\\");
-            File check = new File("C:\\tomcat\\webapps\\" + s + "\\");
+            Path directoryToDelete = Paths.get((StaticVars.TOMCAT_PATH + StaticVars.WEBAPPS + s + "\\"));
+            File check = new File((StaticVars.TOMCAT_PATH + StaticVars.WEBAPPS + s + "\\"));
             // if the dir doesn't exist move on
             if (!check.exists()) {
                 continue;
@@ -105,11 +110,9 @@ public class MainController {
         }
     }
 
-    public String getTomcatPath(String var) {
-        String tomcatPath = System.getenv(var);
-        tomcatPath = StringUtils.makeWindowsPath(tomcatPath);
-
-        return tomcatPath;
+    public void setTomcatPath() {
+        String tomcatPath = System.getenv("CATALINA_BASE");
+        StaticVars.TOMCAT_PATH = StringUtils.makeWindowsPath(tomcatPath);
     }
 
     private void loadProjectsFromConfig(String configPath) throws JAXBException {
@@ -125,7 +128,7 @@ public class MainController {
      */
     public void loadConfig() {
         try {
-            loadProjectsFromConfig(StringUtils.makeWindowsPath(CONFIG_PATH));
+            loadProjectsFromConfig(StringUtils.makeWindowsPath(StaticVars.CONFIG_PATH));
         } catch (JAXBException | NullPointerException e) {
             if (e instanceof NullPointerException) {
                 System.out.println("Unable to load config, path was null, check in hasConfig()");
@@ -140,14 +143,12 @@ public class MainController {
      * @return String with path to config if it exists, null otherwise.
      */
     public boolean hasConfig() {
-        configFile = new File(CONFIG_PATH);
+        configFile = new File(StaticVars.CONFIG_PATH);
         if (configFile.exists() && !configFile.isDirectory()) {
             return true;
         }
         return false;
     }
-
-
 
     /**
      * Writes the given model to the config. If the config file does not exist, it is created.
@@ -170,17 +171,17 @@ public class MainController {
     private void writeModelToConfig(ModuleModel moduleModel) {
         try {
             /* if config is empty, just write the new projectModel */
-            BufferedReader br = new BufferedReader(new FileReader(CONFIG_PATH));
+            BufferedReader br = new BufferedReader(new FileReader(StaticVars.CONFIG_PATH));
             if (br.readLine() == null) {
                 ProjectModelList projectModelList = new ProjectModelList();
                 projectModelList.getModelList().add(new ProjectModel(moduleModel));
-                JaxbUtils.convertToXml(CONFIG_PATH, ProjectModelList.class, projectModelList);
+                JaxbUtils.convertToXml(StaticVars.CONFIG_PATH, ProjectModelList.class, projectModelList);
             }
             /* if it contains projects, unmarshal them, add the new project, marshal the whole thing */
             else {
-                ProjectModelList projectModelList = (ProjectModelList) JaxbUtils.convertToObject(CONFIG_PATH, ProjectModelList.class);
+                ProjectModelList projectModelList = (ProjectModelList) JaxbUtils.convertToObject(StaticVars.CONFIG_PATH, ProjectModelList.class);
                 projectModelList.getModelList().add(new ProjectModel(moduleModel));
-                JaxbUtils.convertToXml(CONFIG_PATH, ProjectModelList.class, projectModelList);
+                JaxbUtils.convertToXml(StaticVars.CONFIG_PATH, ProjectModelList.class, projectModelList);
             }
         } catch (JAXBException | IOException e) {
             e.printStackTrace();
@@ -189,14 +190,14 @@ public class MainController {
 
     public void removeModelFromConfig(ModuleModel moduleModel) {
         try {
-            ProjectModelList projectModelList = (ProjectModelList) JaxbUtils.convertToObject(CONFIG_PATH, ProjectModelList.class);
+            ProjectModelList projectModelList = (ProjectModelList) JaxbUtils.convertToObject(StaticVars.CONFIG_PATH, ProjectModelList.class);
             for (ProjectModel pm : projectModelList.getModelList()) {
                 if (pm.getId().intValue() == moduleModel.getId().intValue()) {
                     projectModelList.getModelList().remove(pm);
                     break;
                 }
             }
-            JaxbUtils.convertToXml(CONFIG_PATH, ProjectModelList.class, projectModelList);
+            JaxbUtils.convertToXml(StaticVars.CONFIG_PATH, ProjectModelList.class, projectModelList);
         } catch (JAXBException e) {
             e.printStackTrace();
         }

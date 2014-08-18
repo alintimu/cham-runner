@@ -3,6 +3,7 @@ package View;
 import Controller.MainController;
 import Controller.ModuleController;
 import Model.ModuleModel;
+import Util.StringUtils;
 import com.sun.xml.internal.ws.api.server.Module;
 
 import java.util.List;
@@ -105,18 +106,11 @@ public class MainWindowView extends JFrame {
      * @param name - The name of the new module
      */
     public void createNewPanel(String name, String path) {
-        ModuleModel moduleModel = new ModuleModel(name, path);
+        ModuleModel moduleModel = new ModuleModel(name, StringUtils.makeWindowsPath(path));
         mainController.modelToConfig(moduleModel);
+        mainController.getFileList().add(moduleModel.getWarName());
 
-        ModuleView moduleView = new ModuleView(moduleModel);
-        moduleView.addRemoveActionListener(new RemoveActionListener());
-
-        ModuleController moduleController = new ModuleController(moduleView);
-
-        projectsPanel.add(moduleView.widgetName, moduleView);
-        revalidateRepaint();
-
-        moduleViewList.add(moduleView);
+        addModuleFromConfig(moduleModel);
     }
 
     public void addModuleFromConfig(ModuleModel moduleModel) {

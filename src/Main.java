@@ -11,7 +11,7 @@ public class Main {
         controller.addView(mainView);
 
         controller.run();
-        controller.getTomcatPath("CATALINA_BASE");
+        System.out.println(controller.getFileList());
 
         /**
          * Testing the module view interface by creating 10 modules. Comment when not needed.         *

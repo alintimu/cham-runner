@@ -169,17 +169,35 @@ public class MainController {
 
     private void writeModelToConfig(ModuleModel moduleModel) {
         try {
+            /* if config is empty, just write the new projectModel */
             BufferedReader br = new BufferedReader(new FileReader(CONFIG_PATH));
             if (br.readLine() == null) {
                 ProjectModelList projectModelList = new ProjectModelList();
                 projectModelList.getModelList().add(new ProjectModel(moduleModel));
                 JaxbUtils.convertToXml(CONFIG_PATH, ProjectModelList.class, projectModelList);
-            } else {
+            }
+            /* if it contains projects, unmarshal them, add the new project, marshal the whole thing */
+            else {
                 ProjectModelList projectModelList = (ProjectModelList) JaxbUtils.convertToObject(CONFIG_PATH, ProjectModelList.class);
                 projectModelList.getModelList().add(new ProjectModel(moduleModel));
                 JaxbUtils.convertToXml(CONFIG_PATH, ProjectModelList.class, projectModelList);
             }
         } catch (JAXBException | IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void removeModelFromConfig(ModuleModel moduleModel) {
+        try {
+            ProjectModelList projectModelList = (ProjectModelList) JaxbUtils.convertToObject(CONFIG_PATH, ProjectModelList.class);
+            for (ProjectModel pm : projectModelList.getModelList()) {
+                if (pm.getId().intValue() == moduleModel.getId().intValue()) {
+                    projectModelList.getModelList().remove(pm);
+                    break;
+                }
+            }
+            JaxbUtils.convertToXml(CONFIG_PATH, ProjectModelList.class, projectModelList);
+        } catch (JAXBException e) {
             e.printStackTrace();
         }
     }

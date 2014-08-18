@@ -171,4 +171,8 @@ public class ModuleView extends JPanel implements AbstractModuleView {
         enabler.addItemListener(esl);
     }
 
+    public void addRemoveActionListener(ActionListener ral) {
+        removeModule.addActionListener(ral);
+    }
+
 }

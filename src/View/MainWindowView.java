@@ -3,6 +3,7 @@ package View;
 import Controller.MainController;
 import Controller.ModuleController;
 import Model.ModuleModel;
+import com.sun.xml.internal.ws.api.server.Module;
 
 import java.util.List;
 import javax.swing.*;
@@ -108,6 +109,8 @@ public class MainWindowView extends JFrame {
         mainController.modelToConfig(moduleModel);
 
         ModuleView moduleView = new ModuleView(moduleModel);
+        moduleView.addRemoveActionListener(new RemoveActionListener());
+
         ModuleController moduleController = new ModuleController(moduleView);
 
         projectsPanel.add(moduleView.widgetName, moduleView);
@@ -118,6 +121,8 @@ public class MainWindowView extends JFrame {
 
     public void addModuleFromConfig(ModuleModel moduleModel) {
         ModuleView moduleView = new ModuleView(moduleModel);
+        moduleView.addRemoveActionListener(new RemoveActionListener());
+
         ModuleController moduleController = new ModuleController(moduleView);
 
         projectsPanel.add(moduleView.widgetName, moduleView);
@@ -130,4 +135,12 @@ public class MainWindowView extends JFrame {
         windowPanel.revalidate();
     }
 
+    private class RemoveActionListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            JButton removeButton = (JButton) e.getSource();
+            ModuleView moduleView = (ModuleView) removeButton.getParent().getParent();
+            mainController.removeModelFromConfig(moduleView.getModel());
+        }
+    }
 }

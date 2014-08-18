@@ -5,6 +5,7 @@ import Controller.ModuleController;
 import Model.ModuleModel;
 import com.sun.xml.internal.ws.api.server.Module;
 
+import java.io.File;
 import java.util.List;
 import javax.swing.*;
 import java.awt.*;
@@ -54,7 +55,7 @@ public class MainWindowView extends JFrame {
         buttonsPanel = new JPanel();
 
         windowPanel.setLayout(new BoxLayout(windowPanel, BoxLayout.PAGE_AXIS));
-        buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.LINE_AXIS));
+        buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.PAGE_AXIS));
         projectsPanel.setLayout(new BoxLayout(projectsPanel, BoxLayout.PAGE_AXIS));
 
         startButton = new JButton("Start");
@@ -84,13 +85,21 @@ public class MainWindowView extends JFrame {
         popupPanel.setLayout(new BoxLayout(popupPanel, BoxLayout.PAGE_AXIS));
         JTextField projectName = new JTextField();
         projectName.setPreferredSize(new Dimension(300, 25));
-        JTextField projectPath = new JTextField();
+        final JTextField projectPath = new JTextField();
         projectPath.setPreferredSize(new Dimension(300, 25));
+        JButton browse = new JButton("Browse");
+        browse.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                fileChooser(projectPath);
+            }
+        });
 
         popupPanel.add(new JLabel("Project name:"));
         popupPanel.add(projectName);
         popupPanel.add(new JLabel("Project root path:"));
         popupPanel.add(projectPath);
+        popupPanel.add(browse);
 
         int result = JOptionPane.showConfirmDialog(null, popupPanel,
                 "Enter the Source and Destination paths", JOptionPane.OK_CANCEL_OPTION);
@@ -129,6 +138,17 @@ public class MainWindowView extends JFrame {
         revalidateRepaint();
 
         moduleViewList.add(moduleView);
+    }
+
+    private void fileChooser(JTextField projectPath) {
+        JFileChooser chooser = new JFileChooser();
+        chooser.setCurrentDirectory(new File("."));
+        chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        chooser.showOpenDialog(null);
+        File selectedFile = chooser.getSelectedFile();
+        if(selectedFile != null) {
+            projectPath.setText(selectedFile.getAbsolutePath());
+        }
     }
 
     public static void revalidateRepaint() {

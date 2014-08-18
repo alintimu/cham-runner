@@ -34,7 +34,7 @@ public class ModuleView extends JPanel implements AbstractModuleView {
         /* Initialize components and add them to the panel */
         initializeComponents();
         addComponentsToPanel();
-
+        configurePanel();
 
     }
 
@@ -78,12 +78,12 @@ public class ModuleView extends JPanel implements AbstractModuleView {
         this.setVisible(true);
     }
 
-    /* TODO implement this motherfucker */
+    /* TODO Priority HIGH implement this motherfucker */
     protected void constructViewFromModel(ModuleModel moduleModel) {
 
     }
 
-    /* TODO implement this motherfucker */
+    /* TODO Priority HIGH implement this motherfucker */
     protected void constructModelFromView(ModuleView moduleView) {
 
     }

@@ -48,7 +48,7 @@ public class MainController {
         hasConfig();
     }
 
-    // TODO recheck fileList var
+    // TODO Priority LOW recheck fileList var
     // if any files remain in the webapps dir on exit, use this to move them to undeployed
     // used in MainWindowView
     public void moveOnClose() {
@@ -97,7 +97,7 @@ public class MainController {
         }
     }
 
-    /* TODO recheck fileList var and initialize propertly */
+    /* TODO Priority LOW recheck fileList var and initialize propertly */
     public void deleteDirs() {
         for (String s : fileList) {
             Path directoryToDelete = Paths.get("C:\\tomcat\\webapps\\" + s + "\\");
@@ -162,7 +162,7 @@ public class MainController {
      *
      * @param moduleModel
      */
-    /* TODO implement this bad-boy. */
+    /* TODO Priority HIGH implement this bad-boy. */
     public void modelToConfig(ModuleModel moduleModel) {
         // append to config if it already exists
         if (hasConfig() != null) {

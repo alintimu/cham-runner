@@ -202,4 +202,10 @@ public class MainController {
             e.printStackTrace();
         }
     }
+
+    public void svnCheckoutTest() {
+        SVNHandler svnHandler = new SVNHandler("pm_tool", "C:\\pm_work\\pm_tool", "http://192.168.0.242/svn/pmrepo/");
+        svnHandler.doAuthentication("root", "root");
+        svnHandler.svnCheckout();
+    }
 }

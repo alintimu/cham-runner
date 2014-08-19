@@ -20,5 +20,10 @@
             <artifactId>maven-invoker</artifactId>
             <version>2.1.1</version>
         </dependency>
+        <dependency>
+            <groupId>org.tmatesoft.svnkit</groupId>
+            <artifactId>svnkit</artifactId>
+            <version>1.8.5</version>
+        </dependency>
     </dependencies>
 </project>

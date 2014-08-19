@@ -15,15 +15,17 @@ import java.util.Arrays;
 /**
  * Controller for project modules
  */
-public class ModuleController {
+public class ModuleController implements Runnable{
     private ModuleView moduleView;
     private ModuleModel moduleModel;
+    Thread buildThread;
 
     public ModuleController(ModuleView moduleView) {
         this(moduleView, moduleView.getModel());
     }
 
     public ModuleController(ModuleView moduleView, ModuleModel moduleModel) {
+        buildThread = new Thread(this, "Project Builder Thread");
         this.moduleModel = moduleModel;
         this.moduleView = moduleView;
 
@@ -70,9 +72,9 @@ public class ModuleController {
     }
 
     // TODO Priority MED check for build params at some point add them as goals
-    public void buildProject(String buildParams, String path) {
+    public void buildProject() {
         InvocationRequest request = new DefaultInvocationRequest();
-        request.setPomFile(new File(path + "\\pom.xml"));
+        request.setPomFile(new File(moduleModel.getPath() + "\\pom.xml"));
         request.setGoals(Arrays.asList("clean", "install", "-Dskiptests"));
 
         Invoker invoker = new DefaultInvoker();
@@ -83,10 +85,15 @@ public class ModuleController {
         }
     }
 
+    @Override
+    public void run() {
+        buildProject();
+    }
+
     private class BuildActionListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            buildProject(moduleView.getBuildCommands(), moduleModel.getPath());
+            buildThread.start();
         }
     }
 

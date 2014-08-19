@@ -51,7 +51,10 @@ public class ModuleModel implements Serializable {
         GenericExtensionFilter filter = new GenericExtensionFilter(".war");
         String[] fileList = targetFolder.list(filter);
 
-        if (fileList.length == 0) {
+        if (fileList == null) {
+            System.out.println("WARNING -- invalid module PATH --");
+            return;
+        } else if (fileList.length == 0) {
             System.out.println("no .war file found");
             return;
         } else {

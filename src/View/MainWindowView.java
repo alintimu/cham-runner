@@ -22,6 +22,8 @@ public class MainWindowView extends JFrame {
     private List<ModuleView> moduleViewList = new ArrayList<>();
     private static JPanel windowPanel;
     private JPanel buttonsPanel;
+    private JPanel addPanel;
+    private JPanel startPanel;
     public static JPanel projectsPanel;
     private JButton startButton;
     private JButton addModule;
@@ -53,10 +55,14 @@ public class MainWindowView extends JFrame {
         windowPanel = new JPanel();
         projectsPanel = new JPanel();
         buttonsPanel = new JPanel();
+        addPanel = new JPanel();
+        startPanel = new JPanel();
 
         windowPanel.setLayout(new BoxLayout(windowPanel, BoxLayout.PAGE_AXIS));
         buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.PAGE_AXIS));
         projectsPanel.setLayout(new BoxLayout(projectsPanel, BoxLayout.PAGE_AXIS));
+        addPanel.setLayout(new BoxLayout(addPanel, BoxLayout.LINE_AXIS));
+        startPanel.setLayout(new BoxLayout(startPanel, BoxLayout.LINE_AXIS));
 
         startButton = new JButton("Start");
         //startButton.setPreferredSize(new Dimension(100,20));
@@ -70,8 +76,12 @@ public class MainWindowView extends JFrame {
                 launchPopUp();
             }
         });
-        buttonsPanel.add(addModule);
-        buttonsPanel.add(startButton);
+        addPanel.add(addModule);
+        startPanel.add(startButton);
+        buttonsPanel.add(Box.createVerticalStrut(10));
+        buttonsPanel.add(addPanel);
+        buttonsPanel.add(Box.createVerticalStrut(20));
+        buttonsPanel.add(startPanel);
         windowPanel.add(projectsPanel);
         windowPanel.add(buttonsPanel);
     }
@@ -99,6 +109,7 @@ public class MainWindowView extends JFrame {
         popupPanel.add(projectName);
         popupPanel.add(new JLabel("Project root path:"));
         popupPanel.add(projectPath);
+        popupPanel.add(Box.createVerticalStrut(6));
         popupPanel.add(browse);
 
         int result = JOptionPane.showConfirmDialog(null, popupPanel,

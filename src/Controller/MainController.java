@@ -86,7 +86,7 @@ public class MainController {
         deleteDirs();
     }
 
-    /* TODO Priority LOW recheck fileList var and initialize propertly */
+    /* TODO Priority LOW recheck fileList var and initialize properly */
     public void deleteDirs() {
         for (String s : fileList) {
             Path directoryToDelete = Paths.get("C:\\tomcat\\webapps\\" + s + "\\");

@@ -82,17 +82,7 @@ public class ModuleView extends JPanel implements AbstractModuleView {
         removeModule.setContentAreaFilled(false);
         removeModule.setBorderPainted(false);
 
-        removeModule.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Object source = e.getSource();
-                if (source instanceof Component) {
-                    Component comp = (Component)source;
-                    MainWindowView.projectsPanel.remove(comp.getParent().getParent());
-                    MainWindowView.revalidateRepaint();
-                }
-            }
-        });
+        removeModule.addActionListener(new RemoveModuleListener());
         enablerPanel.add(enabler);
         buildPanel.add(buildProject);
         deletePanel.add(removeModule);
@@ -175,4 +165,15 @@ public class ModuleView extends JPanel implements AbstractModuleView {
         removeModule.addActionListener(ral);
     }
 
+    private class RemoveModuleListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            Object source = e.getSource();
+            if (source instanceof Component) {
+                Component comp = (Component)source;
+                MainWindowView.projectsPanel.remove(comp.getParent().getParent());
+                MainWindowView.revalidateRepaint();
+            }
+        }
+    }
 }
